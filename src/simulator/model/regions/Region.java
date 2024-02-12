@@ -9,8 +9,15 @@ import org.json.JSONObject;
 import simulator.model.Entity;
 import simulator.model.animals.Animal;
 
-public class Region implements Entity, FoodSupplier, RegionInfo{
+abstract class Region implements Entity, FoodSupplier, RegionInfo{
+	static final double parameterFood1 = 60.0;
+	static final double parameterFood2 = 5.0;
+	static final double parameterFood3 = 2.0;
+	
+	
 	protected List<Animal> animalList;
+	protected int herviborous_animals;
+	
 	
 	//REMOVE
 	/*
@@ -28,9 +35,11 @@ public class Region implements Entity, FoodSupplier, RegionInfo{
 	
 	public Region() {
 		animalList = new ArrayList<Animal>();
+		herviborous_animals = 0;
 	}
 	
 	final void add_animal(Animal a) {
+		// TODO pone el if que necesitas para incrementar el numero de herbivurous animals
 		animalList.add(a);
 	}
 	
@@ -55,11 +64,6 @@ public class Region implements Entity, FoodSupplier, RegionInfo{
 		return obj;
 	}
 	
-	@Override
-	public void update(double dt) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 	
@@ -90,5 +94,4 @@ public class Region implements Entity, FoodSupplier, RegionInfo{
 		System.out.println(testR);
 	}
 	*/
-
 }
