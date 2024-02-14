@@ -1,5 +1,7 @@
 package simulator.model.animals;
 
-public class SelectionStrategy {
+import java.util.List;
 
+public interface SelectionStrategy {
+	Animal select(Animal a, List<Animal> as);
 }
