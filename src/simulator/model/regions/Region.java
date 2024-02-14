@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import simulator.model.Entity;
 import simulator.model.animals.Animal;
+import simulator.model.animals.Diet;
 
 abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	static final double parameterFood1 = 60.0;
@@ -39,7 +40,8 @@ abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	}
 	
 	final void add_animal(Animal a) {
-		// TODO pone el if que necesitas para incrementar el numero de herbivurous animals
+		if (a.get_diet() == Diet.HERBIVORE)
+			herviborous_animals++;
 		animalList.add(a);
 	}
 	
