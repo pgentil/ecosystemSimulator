@@ -2,13 +2,19 @@ package simulator.model.regions;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+
+import simulator.misc.Utils; //FIXME Remove after testing 
+
 import simulator.model.Entity;
 import simulator.model.animals.Animal;
 import simulator.model.animals.Diet;
+import simulator.model.animals.IncorrectParametersException;
+import simulator.model.animals.TestAnimal;
 
 abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	static final double parameterFood1 = 60.0;
@@ -51,17 +57,20 @@ abstract class Region implements Entity, FoodSupplier, RegionInfo{
 			animalList.remove(index);
 	}
 	
+
 	final List<Animal> getAnimals(){
-		//	TODO
-		return null;
+		List<Animal> aux = Collections.unmodifiableList(animalList); //FIXME PREGUNTAR A PICKINS
+		return aux;
 	}
 
 	public JSONObject as_JSON() {
 		JSONObject obj = new JSONObject();
 		JSONArray ja = new JSONArray();
 		 
-		// TODO
-		 
+		for (Animal animal: animalList) {
+			ja.put(animal);
+		}
+		obj.put("animals", ja);
 		 
 		return obj;
 	}
@@ -84,16 +93,21 @@ abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		return str.toString();
 	}
 	
-	/*
-	public static void main(String[] args) {
-		Region testR = new Region();
-		Animal a1 = new Animal("Juan");
-		Animal a2 = new Animal("Pablo");
-		
-		testR.add_animal(a1);
-		System.out.println(testR);
-		testR.add_animal(a2);
-		System.out.println(testR);
+	
+	public static void main(String[] args) throws IncorrectParametersException {
+		Utils._rand.setSeed(2147483647l);
+		Region r1 = new DefaultRegion();
+		Animal a1 = new TestAnimal();
+		r1.add_animal(a1);
+		List<Animal> aux = r1.getAnimals();
+		aux.clear();
+//		Animal a1 = new Animal("Juan");
+//		Animal a2 = new Animal("Pablo");
+//		
+//		testR.add_animal(a1);
+//		System.out.println(testR);
+//		testR.add_animal(a2);
+//		System.out.println(testR);
 	}
-	*/
+	
 }
