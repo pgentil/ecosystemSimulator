@@ -9,8 +9,7 @@ import simulator.model.regions.AnimalMapView;
 
 public abstract class Animal implements Entity, AnimalInfo{
 	
-	public static final double width = _region_mngr.get_width()-1;
-	public static final double height = _region_mngr.get_height()-1;	
+	 
 	
 	private String _genetic_code;
 	private Diet _diet;
@@ -71,6 +70,9 @@ public abstract class Animal implements Entity, AnimalInfo{
 	
 	public void init(AnimalMapView reg_mngr)
 	{
+		double width = _region_mngr.get_width()-1;
+		double height = _region_mngr.get_height()-1;
+		
 		_region_mngr = reg_mngr;
 		if (_pos == null)	
 			_pos = Vector2D.get_random_vector(width, height);
@@ -88,6 +90,9 @@ public abstract class Animal implements Entity, AnimalInfo{
 	//prolly add it to pos
 	public Vector2D adjustPos(double x, double y)
 	{
+		double width = _region_mngr.get_width()-1;
+		double height = _region_mngr.get_height()-1;	
+		 
 		while (x >= width) 
 			x = (x - width);
 		while (x < 0) 
@@ -100,6 +105,9 @@ public abstract class Animal implements Entity, AnimalInfo{
 	}
 	public boolean outOfMap(double x, double y)
 	{
+		double width = _region_mngr.get_width()-1;
+		double height = _region_mngr.get_height()-1;	
+		 
 		return ( x < 0 || x >= width || y < 0 || y >= height);
 	}
 	

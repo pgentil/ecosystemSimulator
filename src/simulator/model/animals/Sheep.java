@@ -93,6 +93,8 @@ public class Sheep extends Animal{
 	
 	private void updateNormal(double dt)
 	{
+		double width = _region_mngr.get_width()-1;
+		double height = _region_mngr.get_height()-1;	
 		if(_pos.distanceTo(_dest) <= _close_to_dest)
 			_dest = Vector2D.get_random_vector(width, height);
 		move(_speed * dt * Math.exp( (_energy - 100.0) * 0.007 )); 
