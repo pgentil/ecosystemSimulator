@@ -6,13 +6,12 @@ public class DefaultRegion extends Region{
 
 	@Override
 	public double get_food(Animal a, double dt) {
-		// TODO Auto-generated method stub
-		return 0;
+		return parameterFood1 * Math.exp(-Math.max(0, herviborous_animals - parameterFood2) * parameterFood3) * dt;
 	}
 
 	@Override
 	public void update(double dt) {
-		// TODO Auto-generated method stub
+		//DOES NOTHING
 		
 	}
 
