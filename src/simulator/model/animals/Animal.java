@@ -1,5 +1,7 @@
 package simulator.model.animals;
 
+import org.json.JSONObject;
+
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 import simulator.model.Entity;
@@ -7,19 +9,22 @@ import simulator.model.regions.AnimalMapView;
 
 public abstract class Animal implements Entity, AnimalInfo{
 	
+	public static final double width = _region_mngr.get_width()-1;
+	public static final double height = _region_mngr.get_height()-1;	
+	
 	private String _genetic_code;
 	private Diet _diet;
-	private State _state;
-	private Vector2D _pos;
-	private Vector2D _dest;
-	private double _energy;
-	private double _speed;
-	private double _age;
-	private double _desire;
+	protected State _state;
+	protected Vector2D _pos;
+	protected Vector2D _dest;
+	protected double _energy;
+	protected double _speed;
+	protected double _age;
+	protected double _desire;
 	private double _sight_range;
 	private Animal _mate_target;
 	private Animal _baby;
-	private AnimalMapView _region_mngr ;
+	protected AnimalMapView _region_mngr ;
 	private SelectionStrategy _mate_strategy;
 
 	protected Animal(String genetic_code, Diet diet, double sight_range,
@@ -59,36 +64,71 @@ public abstract class Animal implements Entity, AnimalInfo{
 		_sight_range = Utils.get_randomized_parameter( (p1.get_sight_range() + p2.get_sight_range())/2, 0.2 );
 		_speed = Utils.get_randomized_parameter((p1.get_speed()+p2.get_speed())/2, 0.2);
 	}
-	@Override
-	public void update(double dt) {
-	
-	}
+//	@Override
+//	public void update(double dt) {
+//	
+//	}
 	
 	public void init(AnimalMapView reg_mngr)
 	{
 		_region_mngr = reg_mngr;
 		if (_pos == null)	
-			_pos = new Vector2D(Vector2D.get_random_vector(0,_region_mngr.get_width()-1 , Vector2D.get_random_vector(0, _region_mngr.get_height()-1);
-		
-	
+			_pos = Vector2D.get_random_vector(width, height);
+		else
+		{
+			double x =  _pos.getX();
+			double y =	_pos.getY();
+			_pos = adjustPos(x,y);
+		}
+		_dest = Vector2D.get_random_vector(width, height);
+				
+				
+				
+	}
+	//prolly add it to pos
+	public Vector2D adjustPos(double x, double y)
+	{
+		while (x >= width) 
+			x = (x - width);
+		while (x < 0) 
+			x = (x + width);
+		while (y >= height) 
+			y = (y - height);
+		while (y < 0) 
+			y = (y + height);
+		return new Vector2D(x, y);
+	}
+	public boolean outOfMap(double x, double y)
+	{
+		return ( x < 0 || x >= width || y < 0 || y >= height);
 	}
 	
+	public Animal deliver_baby()
+	{
+		Animal auxBaby = _baby;
+		_baby = null;
+		return auxBaby;
+	}
 	
+	protected void move(double speed)
+	{
+		_pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
+	}
 	
+	public JSONObject as_JSON() //ni idea
+	{
+		JSONObject json = new JSONObject();
+        json.put("pos", _pos);
+        json.put("gcode", _genetic_code);
+        json.put("diet", _diet);
+        json.put("state", _state);
+        return json;
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	 public boolean is_pregnant() {
+		 return _baby != null;
+	 }
+
 	public String get_genetic_code(){
 		return _genetic_code;
 	}
