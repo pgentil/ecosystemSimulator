@@ -100,7 +100,8 @@ abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		Animal a1 = new TestAnimal();
 		r1.add_animal(a1);
 		List<Animal> aux = r1.getAnimals();
-		aux.clear();
+		Animal a2 = aux.get(0);
+		System.out.println(a2.get_genetic_code());
 //		Animal a1 = new Animal("Juan");
 //		Animal a2 = new Animal("Pablo");
 //		
