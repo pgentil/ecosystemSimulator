@@ -17,11 +17,6 @@ public class Sheep extends Animal{
 	static final double _times40 = 40.0;
 	static final double _desireToMate = 65.0;
 
-
-	
-	
-	
-	
 	private Animal _danger_source;
 	private SelectionStrategy _danger_strategy;
 	
