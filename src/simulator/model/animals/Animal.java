@@ -11,7 +11,7 @@ public abstract class Animal implements Entity, AnimalInfo{
 	
 	 
 	
-	private String _genetic_code;
+	protected String _genetic_code;
 	private Diet _diet;
 	protected State _state;
 	protected Vector2D _pos;
@@ -20,11 +20,11 @@ public abstract class Animal implements Entity, AnimalInfo{
 	protected double _speed;
 	protected double _age;
 	protected double _desire;
-	private double _sight_range;
-	private Animal _mate_target;
-	private Animal _baby;
+	protected double _sight_range;
+	protected Animal _mate_target;
+	protected Animal _baby;
 	protected AnimalMapView _region_mngr ;
-	private SelectionStrategy _mate_strategy;
+	protected SelectionStrategy _mate_strategy;
 
 	protected Animal(String genetic_code, Diet diet, double sight_range,
 			 double init_speed, SelectionStrategy mate_strategy, Vector2D pos) throws IncorrectParametersException {
