@@ -56,6 +56,11 @@ public class RegionManager implements AnimalMapView{
 
 	}
 	
+	/**
+	 * Calculates the region where the animal should be given the animal's position. The returned list will have only two elements
+	 * @param a - Animal instance
+	 * @return Coordinates of the region where the animal should be. list[0] = col, list[1] = row
+	 * 	 */
 	private List<Integer> getRegionColAndRow(Animal a) {
 		Vector2D v = a.get_position();
 		int i = 0;
@@ -80,6 +85,10 @@ public class RegionManager implements AnimalMapView{
 		
 	}
 
+	/**	
+	 * Registers animal in its corresponding region given its position and includes it in the mapping between animals and regions
+	 * @param a - Animal instance
+	 */
 	void register_animal(Animal a) {
 		List<Integer> coords = getRegionColAndRow(a);
 		int i = coords.get(0);
@@ -90,6 +99,10 @@ public class RegionManager implements AnimalMapView{
 		a.init(this);
 	}
 
+	/**
+	 * Unregisters animal from its region and the mapping between animals and regions
+	 * @param a - Animal instance
+	 */
 	void unregister_animal(Animal a) {
 		List<Integer> coords = getRegionColAndRow(a);
 		int i = coords.get(0);
@@ -99,6 +112,10 @@ public class RegionManager implements AnimalMapView{
 		_animal_region.remove(a);
 	}
 	
+	/**
+	 * Updates the region of an animal considering its position.
+	 * @param a - Animal instance
+	 */
 	void update_animal_region(Animal a) {
 		List<Integer> coords = getRegionColAndRow(a);
 		int i = coords.get(0);
@@ -114,6 +131,10 @@ public class RegionManager implements AnimalMapView{
 		}
 	}
 	
+	/**
+	 * Updates all regions. Calls update() for all regions in the region manager.
+	 * @param dt
+	 */
 	void update_all_regions(double dt) {
 		for (int i = 0; i < _cols; ++i) {
 			for (int j = 0; j < _rows; ++j) {
@@ -129,34 +150,30 @@ public class RegionManager implements AnimalMapView{
 
 	@Override
 	public int get_rows() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _rows;
 	}
 
 	@Override
 	public int get_width() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _width;
 	}
 
 	@Override
 	public int get_height() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _height;
 	}
 
 	@Override
 	public int get_region_width() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) _cellWidth;
 	}
 
 	@Override
 	public int get_region_height() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) _cellHeight;
 	}
 
+	
 	@Override
 	public double get_food(Animal a, double dt) {
 		List<Integer> coords = getRegionColAndRow(a);
@@ -167,9 +184,64 @@ public class RegionManager implements AnimalMapView{
 		return actualRegion.get_food(a, dt);
 	}
 
+	
+	private boolean coordInRegion(int regionCol, int regionRow, Vector2D coords) {
+		double x = coords.getX();
+		double y = coords.getY();
+		return (x >= regionCol * _cellWidth && x < (regionCol + 1) * _cellWidth && y >= regionRow * _cellHeight && y < (regionRow + 1) * _cellHeight);
+	}
+	
+	private List<Region> getRegionsInSight(double range, final Vector2D animalCoords){
+		final int accuracy = 20;
+		List<Region> regionsInSight = new ArrayList<Region>();
+		List<Vector2D> coordsInSight = new ArrayList<Vector2D>();
+		
+		for (int i = 0; i < accuracy; ++i) {
+			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * range, animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * range));
+		}
+		
+		for (int i = 0; i < _cols; ++i) {
+			for (int j = 0; j < _rows; ++j) {
+				boolean included = false;
+				int k = 0;
+				
+				while (k < accuracy && !included) {
+					if (coordInRegion(i, j, coordsInSight.get(k))) {
+						regionsInSight.add(_regions[i][j]);
+						included = true;
+					}
+					++k;
+				}
+			}
+		}
+		
+		return regionsInSight;
+	}
+	
+	private List<Animal> getAnimalsInRegions(List<Region> regions){
+		List<Animal> animals = new ArrayList<Animal>();
+		
+		for (Region r: regions) {
+			animals.addAll(r.getAnimals());
+		}
+		
+		return animals;
+	}
+	
 	@Override
 	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
-		double range = e.get_sight_range();
+		Vector2D animalPos = e.get_position();
+		double sightOfRange = e.get_sight_range();
+		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos);
+		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight);
+		
+		Predicate<Animal> inRange = animal -> animalPos.distanceTo(animal.get_position()) <= sightOfRange;
+		animalsInRange.removeIf(!(inRange));
+		
+		
+		
+		
+		
 		return null;
 	}
 
