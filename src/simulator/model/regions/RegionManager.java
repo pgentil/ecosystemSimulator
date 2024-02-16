@@ -236,7 +236,6 @@ public class RegionManager implements AnimalMapView{
 		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight);
 		
 		Predicate<Animal> inRange = animal -> animalPos.distanceTo(animal.get_position()) <= sightOfRange;
-		animalsInRange.removeIf(!(inRange));
 		
 		
 		
