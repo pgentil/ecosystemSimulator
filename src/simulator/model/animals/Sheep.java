@@ -1,9 +1,10 @@
 package simulator.model.animals;
 
-import java.util.Random;
 import java.util.function.Predicate;
 
 import simulator.misc.Vector2D;
+import simulator.misc.Utils;
+
 
 public class Sheep extends Animal{
 	
@@ -151,8 +152,7 @@ public class Sheep extends Animal{
 			_desire = 0.0;
 			_mate_target._desire = 0.0;
 			
-			Random _rand = new Random();
-			if(!is_pregnant() && _rand.nextDouble() <= 0.9) //and probability of 0.9 
+			if(!is_pregnant() && Utils._rand.nextDouble() <= 0.9) //and probability of 0.9 
 			{
 				_baby = new Sheep(this, _mate_target);
 				_mate_target = null;
