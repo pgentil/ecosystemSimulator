@@ -2,10 +2,12 @@ package simulator.model.regions;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Predicate;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import simulator.misc.Vector2D;
 import simulator.model.animals.Animal;
@@ -38,10 +40,10 @@ public class RegionManager implements AnimalMapView{
 
 
 	/**
-	 * Sets a region in the Matrix of region given a column and a row, replacing the old region and inheriting its list of animals
+	 * Sets a region in the Matrix of region given a column and a row, replacing the old region and inheriting its list of animals.
 	 * 
 	 * */
-	void set_region(int row, int col, Region r) {
+	public void set_region(int row, int col, Region r) {
 		assert(row >= 0 && row < _rows && col >= 0 && col < _cols); //FIXME
 		Region original = _regions[col][row];
 		List<Animal> list = r.animalList;
@@ -57,7 +59,7 @@ public class RegionManager implements AnimalMapView{
 	}
 	
 	/**
-	 * Calculates the region where the animal should be given the animal's position. The returned list will have only two elements
+	 * Calculates the region where the animal should be given the animal's position. The returned list will have only two elements.
 	 * @param a - Animal instance
 	 * @return Coordinates of the region where the animal should be. list[0] = col, list[1] = row
 	 * 	 */
@@ -86,10 +88,10 @@ public class RegionManager implements AnimalMapView{
 	}
 
 	/**	
-	 * Registers animal in its corresponding region given its position and includes it in the mapping between animals and regions
+	 * Registers animal in its corresponding region given its position and includes it in the mapping between animals and regions.
 	 * @param a - Animal instance
 	 */
-	void register_animal(Animal a) {
+	public void register_animal(Animal a) {
 		List<Integer> coords = getRegionColAndRow(a);
 		int i = coords.get(0);
 		int j = coords.get(1);
@@ -99,11 +101,11 @@ public class RegionManager implements AnimalMapView{
 		a.init(this);
 	}
 
-	/**
-	 * Unregisters animal from its region and the mapping between animals and regions
+	/** 
+	 * Unregisters animal from its region and the mapping between animals and regions.
 	 * @param a - Animal instance
 	 */
-	void unregister_animal(Animal a) {
+	public void unregister_animal(Animal a) {
 		List<Integer> coords = getRegionColAndRow(a);
 		int i = coords.get(0);
 		int j = coords.get(1); // 
@@ -116,7 +118,7 @@ public class RegionManager implements AnimalMapView{
 	 * Updates the region of an animal considering its position.
 	 * @param a - Animal instance
 	 */
-	void update_animal_region(Animal a) {
+	public void update_animal_region(Animal a) {
 		List<Integer> coords = getRegionColAndRow(a);
 		int i = coords.get(0);
 		int j = coords.get(1);
@@ -135,7 +137,7 @@ public class RegionManager implements AnimalMapView{
 	 * Updates all regions. Calls update() for all regions in the region manager.
 	 * @param dt
 	 */
-	void update_all_regions(double dt) {
+	public void update_all_regions(double dt) {
 		for (int i = 0; i < _cols; ++i) {
 			for (int j = 0; j < _rows; ++j) {
 				_regions[i][j].update(dt);
@@ -184,28 +186,47 @@ public class RegionManager implements AnimalMapView{
 		return actualRegion.get_food(a, dt);
 	}
 
-	
+	/**
+	 * Checks if a certain coordinate is in a region given its column and row in the map.
+	 * @param regionCol Column of the region
+	 * @param regionRow Row of the region
+	 * @param coords Coordinates given in the format of a Vector2D
+	 * @return True if the coordinates are effectively inside the given region, false otherwise
+	 */
 	private boolean coordInRegion(int regionCol, int regionRow, Vector2D coords) {
 		double x = coords.getX();
 		double y = coords.getY();
 		return (x >= regionCol * _cellWidth && x < (regionCol + 1) * _cellWidth && y >= regionRow * _cellHeight && y < (regionRow + 1) * _cellHeight);
 	}
 	
+	/**
+	 * Exhaustive method to check and return the regions that are within the range of sight given a position (coordinates in Vector2D format).
+	 * It is an exhaustive method as it tries to cover the radius of the range of sight around the animal in the map with points, and traverses the regions to check if 
+	 * they contain any of this points using the coordInRegion method.
+	 * 
+	 * @param range Range of sight (distance) of animal
+	 * @param animalCoords Coordinates of the animal given in Vector2D 
+	 * @return List of regions that are within range of sight of the animal
+	 */
 	private List<Region> getRegionsInSight(double range, final Vector2D animalCoords){
 		final int accuracy = 20;
 		List<Region> regionsInSight = new ArrayList<Region>();
 		List<Vector2D> coordsInSight = new ArrayList<Vector2D>();
 		
 		for (int i = 0; i < accuracy; ++i) {
+			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (range / 4), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (range / 4)));
+			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (range / 2), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (range / 2)));
+			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (3 * range / 4), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (3 * range / 4)));
 			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * range, animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * range));
 		}
+		coordsInSight.add(animalCoords);
 		
 		for (int i = 0; i < _cols; ++i) {
 			for (int j = 0; j < _rows; ++j) {
 				boolean included = false;
 				int k = 0;
 				
-				while (k < accuracy && !included) {
+				while (k < accuracy * 4 + 1 && !included) {
 					if (coordInRegion(i, j, coordsInSight.get(k))) {
 						regionsInSight.add(_regions[i][j]);
 						included = true;
@@ -218,6 +239,11 @@ public class RegionManager implements AnimalMapView{
 		return regionsInSight;
 	}
 	
+	/**
+	 * Gets all the animals in a list given a list of regions.
+	 * @param regions List of regions 
+	 * @return List of animals 
+	 */
 	private List<Animal> getAnimalsInRegions(List<Region> regions){
 		List<Animal> animals = new ArrayList<Animal>();
 		
@@ -235,13 +261,32 @@ public class RegionManager implements AnimalMapView{
 		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos);
 		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight);
 		
-		Predicate<Animal> inRange = animal -> animalPos.distanceTo(animal.get_position()) <= sightOfRange;
+		Predicate<Animal> inRange = animal -> animalPos.distanceTo(animal.get_position()) > sightOfRange;
+		filter.and(inRange);
+		animalsInRange.removeIf(filter);
+
+		return animalsInRange;
+	}
+	
+	public JSONObject as_JSON() {
+		JSONObject json = new JSONObject();
+		JSONArray ja = new JSONArray();
+		
+		for (int i = 0; i < _cols; ++i) {
+			for (int j = 0; j < _rows; ++j) {
+				JSONObject region = new JSONObject();
+				region.put("row", j);
+				region.put("col", i);
+				region.put("data", _regions[i][j].as_JSON());
+				ja.put(region);
+			}
+		}
+		
+		json.put("regions", ja);
 		
 		
+		return json;
 		
-		
-		
-		return null;
 	}
 
 }

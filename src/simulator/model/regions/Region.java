@@ -16,7 +16,7 @@ import simulator.model.animals.Diet;
 import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.TestAnimal;
 
-abstract class Region implements Entity, FoodSupplier, RegionInfo{
+public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	static final double parameterFood1 = 60.0;
 	static final double parameterFood2 = 5.0;
 	static final double parameterFood3 = 2.0;
