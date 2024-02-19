@@ -11,17 +11,10 @@ public class Sheep extends Animal{
 	static final double _field_of_view = 40.0;
 	static final double _initial_velocity = 35.0;
 	static final double _max_age = 8.0;
-	static final double _min_energy = 0.0;
-	static final double _max_energy = 100.0;
-	static final double _min_desire = 0.0;
-	static final double _max_desire = 100.0;
-	static final double _close_to_dest = 8.0;
-	static final double _times0point007 = 0.007;
 	static final double _times20 = 20.0;
 	static final double _times40 = 40.0;
 	static final double _times2 = 2.0;
-	static final double _times1point2 = 1.2;
-	static final double _desireToMate = 65.0;
+	
 
 	private Animal _danger_source;
 	private SelectionStrategy _danger_strategy;
@@ -184,25 +177,10 @@ public class Sheep extends Animal{
 	private void changeToDangerSheep()
 	{
 		_state = State.DANGER;
-		_danger_source = null;
+		_mate_target = null;
 	}
 	
-	private double ensureNotOver100(double num1, double num2)
-	{
-		double sum = num1 + num2;
-		if (sum > 100)
-			sum = 100;
-		return sum;
-	}
-	
-	private double ensureNotBelow0(double num1, double num2)
-	{
-		double sub = num1 - num2;
-		if (sub < 0)
-			sub = 0;
-		return sub;
-	}
-	
+
 	
 	
 	

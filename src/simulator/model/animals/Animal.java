@@ -9,7 +9,14 @@ import simulator.model.regions.AnimalMapView;
 
 public abstract class Animal implements Entity, AnimalInfo{
 	
-	 
+	static final double _min_energy = 0.0;
+	static final double _max_energy = 100.0;
+	static final double _min_desire = 0.0;
+	static final double _max_desire = 100.0;
+	static final double _close_to_dest = 8.0;
+	static final double _times0point007 = 0.007;
+	static final double _desireToMate = 65.0;
+	static final double _times1point2 = 1.2;
 	
 	protected String _genetic_code;
 	private Diet _diet;
@@ -168,6 +175,21 @@ public abstract class Animal implements Entity, AnimalInfo{
 		return _dest;
 	}
 		
+	protected double ensureNotOver100(double num1, double num2)
+	{
+		double sum = num1 + num2;
+		if (sum > 100)
+			sum = 100;
+		return sum;
+	}
+	
+	protected double ensureNotBelow0(double num1, double num2)
+	{
+		double sub = num1 - num2;
+		if (sub < 0)
+			sub = 0;
+		return sub;
+	}
 	
 	
 
