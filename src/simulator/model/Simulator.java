@@ -41,7 +41,7 @@ public class Simulator {
 		  set_region(row, col, region);
 	 }
 	 
-	 private void add_animal(Animal a) {
+	 private void add_animal(Animal a) { //change them to public when debugging
 		 _animalList.add(a);
 		 _manager.register_animal(a);
 	 }
@@ -80,9 +80,17 @@ public class Simulator {
 		 }
 	 }
 	 
-	 private void updateAnimals(double dt) {
+	 private void updateAnimals(double dt)  {
 		 for (Animal a : _animalList) {
 			 a.update(dt);
+		 }
+	 }
+	 
+	 private void offspringCreation() {
+		 for (Animal a : _animalList) {
+			 if (a.is_pregnant()) {
+				 add_animal(a.deliver_baby());
+			 }
 		 }
 	 }
 	 
@@ -91,9 +99,20 @@ public class Simulator {
 		 removeDead();
 		 updateAnimals(dt);
 		 _manager.update_all_regions(dt);
+		 offspringCreation();
 		 
 		 
 		 
+	 }
+	 
+	 public JSONObject as_JSON() {
+		 JSONObject jo = new JSONObject();
+		 jo.put("time", _time);
+		 jo.put("state", _manager.as_JSON());
+		 
+
+		 return jo;
+
 	 }
 	 
 	 

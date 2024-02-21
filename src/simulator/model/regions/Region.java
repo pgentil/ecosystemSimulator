@@ -68,7 +68,7 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		JSONArray ja = new JSONArray();
 		 
 		for (Animal animal: animalList) {
-			ja.put(animal);
+			ja.put(animal.as_JSON());
 		}
 		obj.put("animals", ja);
 		 
