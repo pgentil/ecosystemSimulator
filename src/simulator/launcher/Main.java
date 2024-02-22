@@ -152,14 +152,15 @@ public class Main {
 		}
 	}
 
-	/*public static void main(String[] args) {
-		Utils._rand.setSeed(2147483647l);
-		try {
-			start(args);
-		} catch (Exception e) {
-			System.err.println("Something went wrong ...");
-			System.err.println();
-			e.printStackTrace();
-		}
-	} */
+//	public static void main(String[] args) {
+//		Utils._rand.setSeed(2147483647l);
+//		try {
+//			start(args);
+//		} catch (Exception e) {
+//			System.err.println("Something went wrong ...");
+//			System.err.println();
+//			e.printStackTrace();
+//		}
+//	} 
+	
 }

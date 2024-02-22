@@ -8,13 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-import simulator.misc.Utils; //FIXME Remove after testing 
-
 import simulator.model.Entity;
 import simulator.model.animals.Animal;
 import simulator.model.animals.Diet;
-import simulator.model.animals.IncorrectParametersException;
-import simulator.model.animals.TestAnimal;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	static final double parameterFood1 = 60.0;
@@ -94,14 +90,14 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	}
 	
 	
-	public static void main(String[] args) throws IncorrectParametersException {
-		Utils._rand.setSeed(2147483647l);
-		Region r1 = new DefaultRegion();
-		Animal a1 = new TestAnimal();
-		r1.add_animal(a1);
-		List<Animal> aux = r1.getAnimals();
-		Animal a2 = aux.get(0);
-		System.out.println(a2.get_genetic_code());
+//	public static void main(String[] args) throws IncorrectParametersException {
+//		Utils._rand.setSeed(2147483647l);
+//		Region r1 = new DefaultRegion();
+//		Animal a1 = new TestAnimal();
+//		r1.add_animal(a1);
+//		List<Animal> aux = r1.getAnimals();
+//		Animal a2 = aux.get(0);
+//		System.out.println(a2.get_genetic_code());
 //		Animal a1 = new Animal("Juan");
 //		Animal a2 = new Animal("Pablo");
 //		
@@ -109,6 +105,6 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 //		System.out.println(testR);
 //		testR.add_animal(a2);
 //		System.out.println(testR);
-	}
+//	}
 	
 }

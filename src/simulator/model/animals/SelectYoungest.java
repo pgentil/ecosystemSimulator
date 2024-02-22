@@ -2,8 +2,6 @@ package simulator.model.animals;
 
 import java.util.List;
 
-import simulator.misc.Vector2D;
-
 public class SelectYoungest implements SelectionStrategy{
 
 	@Override

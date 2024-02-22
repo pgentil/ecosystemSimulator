@@ -43,6 +43,7 @@ public class Sheep extends Animal{
 			return;
 		case NORMAL:
 			updateNormal(dt);
+			updateStateNormal();
 			break;
 		case MATE:
 			updateMate(dt);
@@ -56,6 +57,8 @@ public class Sheep extends Animal{
 		
 		double x = _pos.getX(); double y =  _pos.getY(); 
 		if(outOfMap(x, y))
+			//adjust
+			_pos = adjustPos(_pos.getX(), _pos.getY());
 			changeToNormalSheep();//_state = State.NORMAL;
 		if(_energy == _min_energy || _age > _max_age)
 			_state = State.DEAD;
@@ -66,30 +69,36 @@ public class Sheep extends Animal{
 		}
 	}
 	
+	private void selectDangerSource() { //FIXME
+		Predicate<Animal> notCarnivorousPredicate = animal -> animal.get_diet() != Diet.CARNIVORE; ///si no son carnivoros los remueve OJO AL PIOJO
+		_danger_source = _danger_strategy.select(this,_region_mngr.get_animals_in_range(this, notCarnivorousPredicate));      
+	}
 	
 	private void updateNormal(double dt)
 	{
-		double width = _region_mngr.get_width()-1;
-		double height = _region_mngr.get_height()-1;	
 		
 		if(_pos.distanceTo(_dest) < _close_to_dest)
-			_dest = Vector2D.get_random_vector(width, height);
+			_dest = randomDestination(); 
+			
 		
 		move(_speed * dt * Math.exp( (_energy - _max_energy) * _times0point007 )); 
 		_age = _age + dt;
 		_energy = ensureNotBelow0(_energy, _times20*dt);
 		_desire = ensureNotOver100(_desire, _times40*dt);
-		
+	}
+	private void updateStateNormal()
+	{
 		if(_danger_source == null)
 		{
-			Predicate<Animal> carnivorousPredicate = animal -> animal.get_diet() == Diet.CARNIVORE;
-			_danger_source = _danger_strategy.select(this,_region_mngr.get_animals_in_range(this, carnivorousPredicate));        
+			selectDangerSource();  
 		}	
 		if(_danger_source != null) //not inside the loop so that if it doesnt enter the above if, it can still change to danger will never happen but just in case
 			changeToDangerSheep(); //_state = State.DANGER;
 		else if(_danger_source == null && _desire > _desireToMate)
 			changeToMateSheep();//_state = State.MATE;
 	}
+		
+	
 	
 	private void updateDanger(double dt)
 	{
@@ -106,10 +115,7 @@ public class Sheep extends Animal{
 			_desire = ensureNotOver100(_desire, _times40*dt);
 		}
 		if(_danger_source == null || _pos.distanceTo(_danger_source.get_position()) > _sight_range)
-		{
-			Predicate<Animal> carnivorousPredicate = animal -> animal.get_diet() == Diet.CARNIVORE;
-			_danger_source = _danger_strategy.select(this,_region_mngr.get_animals_in_range(this, carnivorousPredicate));        
-		}
+			selectDangerSource();     
 		
 		if (_danger_source == null)
 		{
@@ -127,8 +133,7 @@ public class Sheep extends Animal{
 			_mate_target = null;
 		if(_mate_target == null)
 		{
-			Predicate<Animal> sameCodePredicate = animal -> animal.get_genetic_code() == _genetic_code;
-			_mate_target = _mate_strategy.select(this,_region_mngr.get_animals_in_range(this, sameCodePredicate));
+			selectMate();
 			if(_mate_target == null) //should i out it outside of the if
 				updateNormal(dt);
 			else
@@ -154,8 +159,7 @@ public class Sheep extends Animal{
 		
 		if(_danger_source == null)
 		{
-			Predicate<Animal> carnivorousPredicate = animal -> animal.get_diet() == Diet.CARNIVORE;
-			_danger_source = _danger_strategy.select(this,_region_mngr.get_animals_in_range(this, carnivorousPredicate));        
+			selectDangerSource(); 
 		}
 		if(_danger_source != null)
 			changeToDangerSheep(); //_state = State.DANGER;

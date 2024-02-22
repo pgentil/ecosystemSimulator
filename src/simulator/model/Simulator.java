@@ -5,9 +5,15 @@ import java.util.function.Predicate;
 
 import org.json.JSONObject;
 
+import simulator.misc.Vector2D;
 import simulator.model.animals.Animal;
 import simulator.model.animals.AnimalInfo;
+import simulator.model.animals.IncorrectParametersException;
+import simulator.model.animals.SelectClosest;
+import simulator.model.animals.SelectFirst;
+import simulator.model.animals.Sheep;
 import simulator.model.animals.State;
+import simulator.model.animals.Wolf;
 import simulator.model.regions.RegionManager;
 import simulator.model.regions.MapInfo;
 import simulator.model.regions.Region;
@@ -100,9 +106,6 @@ public class Simulator {
 		 updateAnimals(dt);
 		 _manager.update_all_regions(dt);
 		 offspringCreation();
-		 
-		 
-		 
 	 }
 	 
 	 public JSONObject as_JSON() {
@@ -113,6 +116,24 @@ public class Simulator {
 
 		 return jo;
 
+	 }
+	 
+	 public static void main(String[] args) throws IncorrectParametersException {
+		 Simulator sim = new Simulator(10,10, 1000, 1000);
+		 
+		 for (int i = 0; i < 10; ++i) {
+			 Animal a = new Sheep(new SelectFirst(), new SelectFirst(), null);
+			 Animal b = new Wolf(new SelectFirst(), new SelectClosest(), Vector2D.get_random_vector(0, 1000));
+			 sim.add_animal(a);
+			 sim.add_animal(b);
+		 }
+		 System.out.println("Nashe");
+		 while (true) {
+			 int i = 0;
+			 if (i % 3 == 0) {
+				 sim.advance(0.2);
+			 }
+		 }
 	 }
 	 
 	 
