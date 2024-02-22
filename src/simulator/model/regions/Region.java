@@ -16,7 +16,7 @@ import simulator.model.animals.Diet;
 import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.TestAnimal;
 
-abstract class Region implements Entity, FoodSupplier, RegionInfo{
+public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	static final double parameterFood1 = 60.0;
 	static final double parameterFood2 = 5.0;
 	static final double parameterFood3 = 2.0;
@@ -68,7 +68,7 @@ abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		JSONArray ja = new JSONArray();
 		 
 		for (Animal animal: animalList) {
-			ja.put(animal);
+			ja.put(animal.as_JSON());
 		}
 		obj.put("animals", ja);
 		 
@@ -100,7 +100,8 @@ abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		Animal a1 = new TestAnimal();
 		r1.add_animal(a1);
 		List<Animal> aux = r1.getAnimals();
-		aux.clear();
+		Animal a2 = aux.get(0);
+		System.out.println(a2.get_genetic_code());
 //		Animal a1 = new Animal("Juan");
 //		Animal a2 = new Animal("Pablo");
 //		
