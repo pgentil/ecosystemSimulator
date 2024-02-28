@@ -40,6 +40,7 @@ public class Wolf extends Animal {
 			return;
 		case NORMAL:
 			updateNormal(dt);
+			updateStateNormal();
 			break;
 		case MATE:
 			updateMate(dt);
@@ -65,28 +66,28 @@ public class Wolf extends Animal {
 	
 	private void updateNormal(double dt)
 	{
-		double width = _region_mngr.get_width()-1;
-		double height = _region_mngr.get_height()-1;	
-		
 		if(_pos.distanceTo(_dest) < _close_to_dest)
-			_dest = Vector2D.get_random_vector(width, height);
+			_dest = randomDestination(); 
 		
 		move(_speed * dt * Math.exp( (_energy - _max_energy) * _times0point007 )); 
 		_age = _age + dt;
 		_energy = ensureNotBelow0(_energy, _times18*dt);
 		_desire = ensureNotOver100(_desire, _times30*dt);
-		
+	}
+	
+	private void updateStateNormal() {
 		if(_energy < _hunger_energy)
 			changeToHungerWolf();
 		else if (_energy > _hunger_energy && _desire > _desireToMate)
 			changeToMateWolf();
 	}
+	
 	private void updateHunger(double dt)
 	{
 		if(_hunt_target == null || _hunt_target.get_state().equals(State.DEAD) || _pos.distanceTo(_hunt_target.get_position()) > _field_of_view)
 		{
-			Predicate<Animal> herbivorousPredicate = animal -> animal.get_diet() == Diet.CARNIVORE;
-			_hunt_target = _hunting_strategy.select(this,_region_mngr.get_animals_in_range(this, herbivorousPredicate));   
+			Predicate<Animal> notHerbivorousPredicate = animal -> animal.get_diet() != Diet.HERBIVORE;
+			_hunt_target = _hunting_strategy.select(this,_region_mngr.get_animals_in_range(this, notHerbivorousPredicate));   
 		}
 		if(_hunt_target == null)
 			updateNormal(dt);
@@ -118,8 +119,7 @@ public class Wolf extends Animal {
 			_mate_target = null;
 		if(_mate_target == null)
 		{
-			Predicate<Animal> sameCodePredicate = animal -> animal.get_genetic_code() == _genetic_code;
-			_mate_target = _mate_strategy.select(this,_region_mngr.get_animals_in_range(this, sameCodePredicate));
+			selectMate();
 			if(_mate_target == null) //should i out it outside of the if
 				updateNormal(dt);
 			else

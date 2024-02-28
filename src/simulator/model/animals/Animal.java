@@ -1,5 +1,7 @@
 package simulator.model.animals;
 
+import java.util.function.Predicate;
+
 import org.json.JSONObject;
 
 import simulator.misc.Utils;
@@ -53,6 +55,7 @@ public abstract class Animal implements Entity, AnimalInfo{
 			_mate_target = null;
 			_baby = null;
 			_region_mngr = null;
+			_pos = pos;
 		}
 	}
 	
@@ -77,19 +80,17 @@ public abstract class Animal implements Entity, AnimalInfo{
 	
 	public void init(AnimalMapView reg_mngr)
 	{
-		double width = _region_mngr.get_width()-1;
-		double height = _region_mngr.get_height()-1;
-		
+
 		_region_mngr = reg_mngr;
 		if (_pos == null)	
-			_pos = Vector2D.get_random_vector(width, height);
+			_pos = randomDestination();
 		else
 		{
 			double x =  _pos.getX();
 			double y =	_pos.getY();
 			_pos = adjustPos(x,y);
 		}
-		_dest = Vector2D.get_random_vector(width, height);
+		_dest = randomDestination();;
 				
 				
 				
@@ -191,6 +192,18 @@ public abstract class Animal implements Entity, AnimalInfo{
 		return sub;
 	}
 	
+	protected Vector2D randomDestination() {
+		double width = _region_mngr.get_width()-1;
+		double height = _region_mngr.get_height()-1;	
+		Vector2D randomDest = new Vector2D(Utils._rand.nextDouble(width), Utils._rand.nextDouble(height));
+		
+		return randomDest;
+	}
 	
+	protected void selectMate() {
+		Predicate<Animal> differentCodePredicate = animal -> animal.get_genetic_code() != _genetic_code;
+		_mate_target = _mate_strategy.select(this,_region_mngr.get_animals_in_range(this, differentCodePredicate));
+		
+	}
 
 }
