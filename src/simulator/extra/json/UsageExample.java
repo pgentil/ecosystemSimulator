@@ -164,11 +164,11 @@ public class UsageExample {
 
 		// build a JSONObject from a file
 		JSONObject joFromFile1 = new JSONObject(
-				new JSONTokener(new FileInputStream(new File("resources/other/json-example-1.json"))));
+				new JSONTokener(new FileInputStream(new File("json-example-1.json"))));
 		JSONObject joFromFile2 = new JSONObject(
-				new JSONTokener(new FileInputStream(new File("resources/other/json-example-2.json"))));
+				new JSONTokener(new FileInputStream(new File("json-example-2.json"))));
 		JSONObject joFromFile3 = new JSONObject(
-				new JSONTokener(new FileInputStream(new File("resources/other/json-example-3.json"))));
+				new JSONTokener(new FileInputStream(new File("json-example-3.json"))));
 
 		accessExample(joFromString);
 		accessExample(joFromFile1);
