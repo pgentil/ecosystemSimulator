@@ -1,18 +1,20 @@
 package simulator.factories;
 
 import org.json.JSONObject;
+import simulator.model.animals.SelectFirst;
 
-public class SelectFirstBuilder<T> extends Builder<T>{
+public class SelectFirstBuilder extends Builder<SelectFirst>{
 
-	public SelectFirstBuilder(String type_tag, String desc) {
-		super(type_tag, desc);
+	public SelectFirstBuilder() {
+		
+		super("first", null);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected T create_instance(JSONObject data) {
-		// TODO Auto-generated method stub
-		return null;
+	protected SelectFirst create_instance(JSONObject data) {
+		
+		return new SelectFirst();
 	}
 
 }
