@@ -3,11 +3,12 @@ package simulator.factories;
 import org.json.JSONObject;
 
 import simulator.model.regions.DefaultRegion;
+import simulator.model.regions.Region;
 
-public class DefaultRegionBuilder extends Builder<DefaultRegion>{
+public class DefaultRegionBuilder extends Builder<Region>{
 
 	public DefaultRegionBuilder() {
-		super("default", "");
+		super("default", "DefaultRegion");
 		// TODO Auto-generated constructor stub
 	}
 

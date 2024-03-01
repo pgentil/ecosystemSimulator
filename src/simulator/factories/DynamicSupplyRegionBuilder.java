@@ -3,11 +3,12 @@ package simulator.factories;
 import org.json.JSONObject;
 
 import simulator.model.regions.DynamicSupplyRegion;
+import simulator.model.regions.Region;
 
-public class DynamicSupplyRegionBuilder extends Builder<DynamicSupplyRegion>{
+public class DynamicSupplyRegionBuilder extends Builder<Region>{
 
 	public DynamicSupplyRegionBuilder() {
-		super("dynamic", "");
+		super("dynamic", "DynamicSupplyRegion");
 		// TODO Auto-generated constructor stub
 	}
 	
