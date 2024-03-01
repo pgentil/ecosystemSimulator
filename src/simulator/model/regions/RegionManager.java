@@ -44,7 +44,7 @@ public class RegionManager implements AnimalMapView{
 	 * 
 	 * */
 	public void set_region(int row, int col, Region r) {
-		assert(row >= 0 && row < _rows && col >= 0 && col < _cols); //FIXME
+		assert(row >= 0 && row < _rows && col >= 0 && col < _cols); 
 		Region original = _regions[col][row];
 		List<Animal> list = r.animalList;
 
@@ -106,12 +106,9 @@ public class RegionManager implements AnimalMapView{
 	 * @param a - Animal instance
 	 */
 	public void unregister_animal(Animal a) {
-		List<Integer> coords = getRegionColAndRow(a);
-		int i = coords.get(0);
-		int j = coords.get(1); // 
-		Region region = _regions[i][j];
+		Region region = _animal_region.get(a);
 		region.remove_animal(a);
-		_animal_region.remove(a); //FIXME
+		_animal_region.remove(a); 
 	}
 	
 	/**
@@ -178,10 +175,7 @@ public class RegionManager implements AnimalMapView{
 	
 	@Override
 	public double get_food(Animal a, double dt) {
-		List<Integer> coords = getRegionColAndRow(a); //FIXME
-		int i = coords.get(0);
-		int j = coords.get(1);
-		Region actualRegion = _regions[i][j];
+		Region actualRegion = _animal_region.get(a);
 		
 		return actualRegion.get_food(a, dt);
 	}
