@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
+import simulator.model.animals.Animal;
 import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.SelectionStrategy;
 import simulator.model.animals.Wolf;
