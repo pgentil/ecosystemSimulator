@@ -7,7 +7,7 @@ public class SelectYoungestBuilder extends Builder<SelectYoungest>{
 
 	public SelectYoungestBuilder() {
 		
-		super("first", null);
+		super("youngest", null);
 		// TODO Auto-generated constructor stub
 	}
 
