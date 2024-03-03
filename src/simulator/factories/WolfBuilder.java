@@ -12,7 +12,7 @@ import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.SelectionStrategy;
 import simulator.model.animals.Wolf;
 
-public class WolfBuilder extends Builder<Wolf>{
+public class WolfBuilder extends Builder<Animal>{
 
 	public WolfBuilder() {
 		super("wolf", "Wolf");
