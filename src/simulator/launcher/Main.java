@@ -40,12 +40,16 @@ public class Main {
 	// default values for some parameters
 	//
 	private final static Double _default_time = 10.0; // in seconds
+	private final static Double _default_delta_time = 0.03;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
 	private static Double _time = null;
 	private static String _in_file = null;
 	private static ExecMode _mode = ExecMode.BATCH;
+	private static Double _delta_time = null;
+	
+	
 
 	private static void parse_args(String[] args) {
 
@@ -61,6 +65,9 @@ public class Main {
 			parse_help_option(line, cmdLineOptions);
 			parse_in_file_option(line);
 			parse_time_option(line);
+			
+            parse_delta_time_option(line);
+
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -84,17 +91,22 @@ public class Main {
 		Options cmdLineOptions = new Options();
 
 		// help
-		cmdLineOptions.addOption(Option.builder("h").longOpt("help").desc("Print this message.").build());
+		cmdLineOptions.addOption(Option.builder("h").longOpt("help")
+				.desc("Print this message.").build());
 
 		// input file
-		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("A configuration file.").build());
+		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg()
+				.desc("A configuration file.").build());
 
 		// steps
 		cmdLineOptions.addOption(Option.builder("t").longOpt("time").hasArg()
-				.desc("An real number representing the total simulation time in seconds. Default value: "
-						+ _default_time + ".")
-				.build());
-
+				.desc("An real number representing the total simulation time in seconds. Default value: " + _default_time + ".").build());
+		 cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg()
+				 .desc("Output file, where output is written.").build());
+		 cmdLineOptions.addOption(Option.builder("sv").longOpt("simple-viewer")
+				 .desc("Show the viewer window in console mode.").build());
+		 cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
+				 .desc("A double representing actual time, in seconds, per simulation step. Default value: " + _default_delta_time + ".").build());
 		return cmdLineOptions;
 	}
 
@@ -122,6 +134,17 @@ public class Main {
 			throw new ParseException("Invalid value for time: " + t);
 		}
 	}
+	
+	 private static void parse_delta_time_option(CommandLine line) throws ParseException {
+	        String dt = line.getOptionValue("dt", _default_delta_time.toString());
+	        try {
+	            _delta_time = Double.parseDouble(dt);
+	            assert (_delta_time > 0);
+	        } catch (Exception e) {
+	            throw new ParseException("Invalid value for delta time: " + dt);
+	        }
+	    }
+	
 
 	private static void init_factories() {
 	}
