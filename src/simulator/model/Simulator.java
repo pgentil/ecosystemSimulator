@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Simulator {
-//	private RegionFactory animalFactory; TODO
-//	private AnimalFactory regionFactory; TODO
 	
 	private RegionManager _manager;
 	private List<Animal> _animalList;
 	private double _time;
+	private Factory<Animal> _animal_factory;
+	private Factory<Region> _region_factory;
 	
 	 public Simulator(int cols, int rows, int width, int height,
 			 Factory<Animal> animals_factory, Factory<Region> regions_factory) 
@@ -29,17 +29,16 @@ public class Simulator {
 		 this._time = 0;
 		 this._manager = new RegionManager(cols, rows, width, height);
 		 this._animalList = new ArrayList<Animal>();
+		 this._animal_factory = animals_factory;
+		 this._region_factory = regions_factory;
 	 }
 	 
 	 private void set_region(int row, int col, Region r) {
 		 _manager.set_region(row, col, r);
 	 }
 	 
-	 public void set_region(int row, int col, JSONObject r_json) { //Ask if you should as well retrieve the animals from the region FIXME
-		  Region region = null;
-		 //TODO
-		  assert(region != null);
-		  set_region(row, col, region);
+	 public void set_region(int row, int col, JSONObject r_json) { 
+		  set_region(row, col, _region_factory.create_instance(r_json));
 	 }
 	 
 	 private void add_animal(Animal a) { //change them to public when debugging
@@ -48,10 +47,7 @@ public class Simulator {
 	 }
 	 
 	 public void add_animal(JSONObject a_json) {
-		 Animal animal = null;
-		 //TODO
-		 assert(animal != null);
-		 add_animal(animal);
+		 add_animal(_animal_factory.create_instance(a_json));
 	 }
 	 
 	 public MapInfo get_map_info() {
