@@ -135,26 +135,28 @@ public class Sheep extends Animal{
 			selectMate();
 			if(_mate_target == null) //should i out it outside of the if
 				updateNormal(dt);
-			else
-			{
-				_dest = _mate_target.get_position();
-				move(_times2*_speed * dt * Math.exp( (_energy - _max_energy) * _times0point007 )); 
-				_age = _age + dt;
-				_energy = ensureNotBelow0(_energy, _times20*_times1point2*dt);
-				_desire = ensureNotOver100(_desire, _times40*dt);
-			}
-		}
-		if(_pos.distanceTo(_mate_target.get_position()) < _close_to_dest)
-		{
-			_desire = 0.0;
-			_mate_target._desire = 0.0;
 			
-			if(!is_pregnant() && Utils._rand.nextDouble() <= 0.9) //and probability of 0.9 
+		}
+		if (_mate_target != null)
+		{
+			_dest = _mate_target.get_position();
+			move(_times2*_speed * dt * Math.exp( (_energy - _max_energy) * _times0point007 )); 
+			_age = _age + dt;
+			_energy = ensureNotBelow0(_energy, _times20*_times1point2*dt);
+			_desire = ensureNotOver100(_desire, _times40*dt);
+			if(_pos.distanceTo(_mate_target.get_position()) < _close_to_dest)
 			{
-				_baby = new Sheep(this, _mate_target);
-				_mate_target = null;
+				_desire = 0.0;
+				_mate_target._desire = 0.0;
+				
+				if(!is_pregnant() && Utils._rand.nextDouble() <= 0.9) //and probability of 0.9 
+				{
+					_baby = new Sheep(this, _mate_target);
+					_mate_target = null;
+				}
 			}
 		}
+		
 		
 		if(_danger_source == null)
 		{

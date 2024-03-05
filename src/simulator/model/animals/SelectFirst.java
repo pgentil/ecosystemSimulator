@@ -10,7 +10,7 @@ public class SelectFirst implements SelectionStrategy{
 		if (!as.isEmpty()) {
 			if (as.get(0)!= a)
 				first = as.get(0);
-			else
+			else if (as.size() > 1)
 				first = as.get(1);
 		}
 			

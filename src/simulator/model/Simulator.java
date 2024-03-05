@@ -84,10 +84,15 @@ public class Simulator {
 	 }
 	 
 	 private void offspringCreation() {
+		 List<Animal> babyList = new ArrayList<Animal>(); 
 		 for (Animal a : _animalList) {
 			 if (a.is_pregnant()) {
-				 add_animal(a.deliver_baby());
+				 Animal baby = a.deliver_baby();
+				 babyList.add(baby);
 			 }
+		 }
+		 for (Animal baby: babyList) {
+			 add_animal(baby);
 		 }
 	 }
 	 

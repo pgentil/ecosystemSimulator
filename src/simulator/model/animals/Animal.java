@@ -60,6 +60,7 @@ public abstract class Animal implements Entity, AnimalInfo{
 	}
 	
 	protected Animal(Animal p1, Animal p2){
+		_state = State.NORMAL;
 		_dest = null;
 		_mate_target = null;
 		_baby = null;

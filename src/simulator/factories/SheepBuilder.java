@@ -8,12 +8,14 @@ import org.json.JSONObject;
 
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
+import simulator.model.animals.Animal;
 import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.SelectionStrategy;
 import simulator.model.animals.Sheep;
-import simulator.model.animals.Wolf;
 
-public class SheepBuilder extends Builder<Sheep> {
+import simulator.launcher.Main;
+
+public class SheepBuilder extends Builder<Animal> {
 	
 
 	
@@ -44,11 +46,8 @@ fill_in_data(data);
 			}
 		}
 		
-		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<Builder<SelectionStrategy>>();
-		selection_strategy_builders.add(new SelectFirstBuilder());
-//		selection_strategy_builders.add(new SelectClosestBuilder());
-//		selection_strategy_builders.add(new SelectYoungestBuilder());
-		Factory<SelectionStrategy> selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+		
+		Factory<SelectionStrategy> selection_strategy_factory = Main.getStrategyFactory();
 		
 		Sheep sheep = null;
 		try {

@@ -2,6 +2,7 @@ package simulator.model.regions;
 
 import simulator.misc.Utils;
 import simulator.model.animals.Animal;
+import simulator.model.animals.Diet;
 
 public class DynamicSupplyRegion extends Region{
 	private double _food;
@@ -22,7 +23,11 @@ public class DynamicSupplyRegion extends Region{
 
 	@Override
 	public double get_food(Animal a, double dt) {
-		return Math.min(_food, parameterFood1 * Math.exp(-Math.max(0, herviborous_animals - parameterFood2) * parameterFood3) * dt);
+		double food = 0;
+		if (a.get_diet() == Diet.HERBIVORE) {
+			food = Math.min(_food, parameterFood1 * Math.exp(-Math.max(0, herviborous_animals - parameterFood2) * parameterFood3) * dt);
+		}
+		return food;
 	}
 
 }

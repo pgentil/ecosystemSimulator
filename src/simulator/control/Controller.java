@@ -35,14 +35,14 @@ public class Controller {
 					 }
 				 }
 			 }
-			 //Retrieving animals
-			 JSONArray jAnimals = data.getJSONArray("animals");
-			 for (int i = 0; i < jRegions.length(); ++i) {
-				 JSONObject a_json = jAnimals.getJSONObject(i);
-				 int amount = a_json.getInt("amount"); //amount of specified animal
-				 for (int j = 0; j < amount; ++j){
-					 _sim.add_animal(a_json.getJSONObject("spec"));
-				 }
+		 }
+		//Retrieving animals
+		 JSONArray jAnimals = data.getJSONArray("animals");
+		 for (int i = 0; i < jAnimals.length(); ++i) {
+			 JSONObject a_json = jAnimals.getJSONObject(i);
+			 int amount = a_json.getInt("amount"); //amount of specified animal
+			 for (int j = 0; j < amount; ++j){
+				 _sim.add_animal(a_json.getJSONObject("spec"));
 			 }
 		 }
 	 }
@@ -63,6 +63,9 @@ public class Controller {
 
 		 result.put("in", _sim.as_JSON());
 		 while (_sim.get_time() <= t) {
+			 if (_sim.get_time() >= 4) {
+				 System.out.println("");
+			 }
 			 _sim.advance(dt);
 			 if (sv) {
 				 view.update(to_animals_info(_sim.get_animals()), _sim.get_time(), dt);

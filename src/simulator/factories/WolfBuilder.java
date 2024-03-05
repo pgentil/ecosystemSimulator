@@ -13,6 +13,8 @@ import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.SelectionStrategy;
 import simulator.model.animals.Wolf;
 
+import simulator.launcher.Main;
+
 public class WolfBuilder extends Builder<Animal>{
 
 	public WolfBuilder() {
@@ -53,11 +55,7 @@ public class WolfBuilder extends Builder<Animal>{
 			}
 		}
 		
-		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<Builder<SelectionStrategy>>();
-		selection_strategy_builders.add(new SelectFirstBuilder());
-//		selection_strategy_builders.add(new SelectClosestBuilder());
-//		selection_strategy_builders.add(new SelectYoungestBuilder());
-		Factory<SelectionStrategy> selection_strategy_factory = new BuilderBasedFactory<SelectionStrategy>(selection_strategy_builders);
+		Factory<SelectionStrategy> selection_strategy_factory = Main.getStrategyFactory();
 		
 		Wolf wolf = null;
 		try {

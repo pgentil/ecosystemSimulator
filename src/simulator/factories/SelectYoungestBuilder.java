@@ -2,12 +2,13 @@ package simulator.factories;
 
 import org.json.JSONObject;
 import simulator.model.animals.SelectYoungest;
+import simulator.model.animals.SelectionStrategy;
 
-public class SelectYoungestBuilder extends Builder<SelectYoungest>{
+public class SelectYoungestBuilder extends Builder<SelectionStrategy>{
 
 	public SelectYoungestBuilder() {
 		
-		super("youngest", null);
+		super("youngest", "SelectYoungest");
 		// TODO Auto-generated constructor stub
 	}
 
