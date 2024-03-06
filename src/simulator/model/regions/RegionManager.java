@@ -27,8 +27,8 @@ public class RegionManager implements AnimalMapView{
 		this._height = height;
 		this._cols = cols;
 		this._rows = rows;
-		this._cellHeight = height / rows;
-		this._cellWidth = width / cols;
+		this._cellHeight = (double)height / rows;
+		this._cellWidth = (double)width / cols;
 		this._regions = new Region[cols][rows];
 		for (int i = 0; i < cols; ++i) {
 			for (int j = 0; j < rows; j++) {
@@ -94,9 +94,13 @@ public class RegionManager implements AnimalMapView{
 	public void register_animal(Animal a) {
 		a.init(this);
 		List<Integer> coords = getRegionColAndRow(a);
+		
 		int i = coords.get(0);
 		int j = coords.get(1);
-		Region region = _regions[i][j];
+		assert(i >= 0 && i < _cols && j >= 0 && j < _rows);
+		
+		Region region = _regions[i][j]; 
+
 		region.add_animal(a);
 		_animal_region.put(a, region); 
 	}
@@ -203,15 +207,16 @@ public class RegionManager implements AnimalMapView{
 	 * @return List of regions that are within range of sight of the animal
 	 */
 	private List<Region> getRegionsInSight(double range, final Vector2D animalCoords){
-		final int accuracy = 20;
+		final int accuracy1 = 12;
+		final int accuracy2 = 4;
 		List<Region> regionsInSight = new ArrayList<Region>();
 		List<Vector2D> coordsInSight = new ArrayList<Vector2D>();
 		
-		for (int i = 0; i < accuracy; ++i) {
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (range / 4), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (range / 4)));
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (range / 2), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (range / 2)));
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (3 * range / 4), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (3 * range / 4)));
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * range, animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * range));
+		for (int i = 0; i < accuracy1; ++i) {
+			for (int j = 0; j < accuracy2; ++j) {
+				coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j, animalCoords.getY() + Math.sin(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j));
+			}
+			
 		}
 		coordsInSight.add(animalCoords);
 		
@@ -220,7 +225,7 @@ public class RegionManager implements AnimalMapView{
 				boolean included = false;
 				int k = 0;
 				
-				while (k < accuracy * 4 + 1 && !included) {
+				while (k < accuracy1 * accuracy2 + 1 && !included) {
 					if (coordInRegion(i, j, coordsInSight.get(k))) {
 						regionsInSight.add(_regions[i][j]);
 						included = true;
