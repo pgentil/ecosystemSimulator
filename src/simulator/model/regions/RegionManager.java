@@ -63,8 +63,8 @@ public class RegionManager implements AnimalMapView{
 	 * @param a - Animal instance
 	 * @return Coordinates of the region where the animal should be. list[0] = col, list[1] = row
 	 * 	 */
-	private List<Integer> getRegionColAndRow(Animal a) {
-		Vector2D v = a.get_position();
+	private List<Integer> getRegionColAndRow(Vector2D a) {
+		Vector2D v = a;
 		int i = 0;
 		int j = 0;
 		double x = v.getX(), y = v.getY();
@@ -93,7 +93,7 @@ public class RegionManager implements AnimalMapView{
 	 */
 	public void register_animal(Animal a) {
 		a.init(this);
-		List<Integer> coords = getRegionColAndRow(a);
+		List<Integer> coords = getRegionColAndRow(a.get_position());
 		
 		int i = coords.get(0);
 		int j = coords.get(1);
@@ -120,7 +120,7 @@ public class RegionManager implements AnimalMapView{
 	 * @param a - Animal instance
 	 */
 	public void update_animal_region(Animal a) {
-		List<Integer> coords = getRegionColAndRow(a);
+		List<Integer> coords = getRegionColAndRow(a.get_position());
 		int i = coords.get(0);
 		int j = coords.get(1);
 		Region registeredRegion = _animal_region.get(a);
@@ -167,13 +167,13 @@ public class RegionManager implements AnimalMapView{
 	}
 
 	@Override
-	public int get_region_width() {
-		return (int) _cellWidth;
+	public double get_region_width() {
+		return _cellWidth;
 	}
 
 	@Override
-	public int get_region_height() {
-		return (int) _cellHeight;
+	public double get_region_height() {
+		return _cellHeight;
 	}
 
 	
@@ -183,6 +183,31 @@ public class RegionManager implements AnimalMapView{
 		
 		return actualRegion.get_food(a, dt);
 	}
+	
+	
+	/**
+	 * Checks if a certain region is inside an area given its right, left, top and bottom limits (sides)
+	 * @param regionCol Column of the region
+	 * @param regionRow Row of the region
+	 * @param leftLimit left limit (left side) of the area
+	 * @param rightLimit right limit (right side) of the area
+	 * @param topLimit top limit (top side) of the area
+	 * @param bottomLimit bottom limit (bottom side) of the area
+	 * @return True if the region is inside the specified area
+	 */
+	private boolean regionInsideLimits(int regionCol,
+			int regionRow,
+			double leftLimit,
+			double rightLimit,
+			double topLimit,
+			double bottomLimit)
+	{
+		return (leftLimit < regionCol * _cellWidth &&
+				rightLimit >= (regionCol + 1) * _cellWidth &&
+				topLimit < regionRow * _cellHeight &&
+				bottomLimit >= (regionRow + 1) * _cellHeight);
+	}
+	
 
 	/**
 	 * Checks if a certain coordinate is in a region given its column and row in the map.
@@ -207,33 +232,70 @@ public class RegionManager implements AnimalMapView{
 	 * @return List of regions that are within range of sight of the animal
 	 */
 	private List<Region> getRegionsInSight(double range, final Vector2D animalCoords){
-		final int accuracy1 = 12;
-		final int accuracy2 = 4;
 		List<Region> regionsInSight = new ArrayList<Region>();
-		List<Vector2D> coordsInSight = new ArrayList<Vector2D>();
+		//out of bound checking
+		double rightLimit = (animalCoords.getX() + range >= _width ? _width : animalCoords.getX() + range); //checks if sight of range is inside map
+		double leftLimit = (animalCoords.getX() - range < 0 ? 0 : animalCoords.getX() - range);
+		double bottomLimit = (animalCoords.getY() + range >= _height ? _height : animalCoords.getY() + range);
+		double topLimit = (animalCoords.getY() - range < 0 ? 0 : animalCoords.getY() - range);
+		List<Integer> regionCoord = getRegionColAndRow(animalCoords);
+		int regionRow = regionCoord.get(0);
+		int regionCol = regionCoord.get(1);
 		
-		for (int i = 0; i < accuracy1; ++i) {
-			for (int j = 0; j < accuracy2; ++j) {
-				coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j, animalCoords.getY() + Math.sin(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j));
-			}
-			
+		//how many rows and cols could the range of sight fully cover
+		double rangeRow = range;
+		int rows = 0;
+		while (rangeRow >= range) {
+			rangeRow -= _cellWidth;
+			++rows;
 		}
-		coordsInSight.add(animalCoords);
+		double rangeCol = range;
+		int cols = 0;
+		while (rangeCol >= range) {
+			rangeCol -= _cellHeight;
+			++cols;
+		}
 		
-		for (int i = 0; i < _cols; ++i) {
-			for (int j = 0; j < _rows; ++j) {
-				boolean included = false;
-				int k = 0;
-				
-				while (k < accuracy1 * accuracy2 + 1 && !included) {
-					if (coordInRegion(i, j, coordsInSight.get(k))) {
-						regionsInSight.add(_regions[i][j]);
-						included = true;
-					}
-					++k;
+		for (int i = regionCol - cols; i <= regionCol + cols; ++i) {
+			for (int j = regionRow - rows; j <= regionRow + rows; ++j) {
+				if (i >= 0 &&
+					i < _cols &&
+					j >= 0 &&
+					j < _rows )
+					//&&  regionInsideLimits(i, j, leftLimit, rightLimit, topLimit, bottomLimit))
+				{
+					regionsInSight.add(_regions[i][j]);
 				}
 			}
 		}
+		
+		
+//		final int accuracy1 = 12;
+//		final int accuracy2 = 4;
+//		List<Vector2D> coordsInSight = new ArrayList<Vector2D>();
+//		
+//		for (int i = 0; i < accuracy1; ++i) {
+//			for (int j = 0; j < accuracy2; ++j) {
+//				coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j, animalCoords.getY() + Math.sin(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j));
+//			}
+//			
+//		}
+//		coordsInSight.add(animalCoords);
+//		
+//		for (int i = 0; i < _cols; ++i) {
+//			for (int j = 0; j < _rows; ++j) {
+//				boolean included = false;
+//				int k = 0;
+//				
+//				while (k < accuracy1 * accuracy2 + 1 && !included) {
+//					if (coordInRegion(i, j, coordsInSight.get(k))) {
+//						regionsInSight.add(_regions[i][j]);
+//						included = true;
+//					}
+//					++k;
+//				}
+//			}
+//		}
 		
 		return regionsInSight;
 	}
@@ -255,6 +317,7 @@ public class RegionManager implements AnimalMapView{
 	
 	@Override
 	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
+
 		Vector2D animalPos = e.get_position();
 		double sightOfRange = e.get_sight_range();
 		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos);

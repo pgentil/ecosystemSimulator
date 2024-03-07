@@ -80,6 +80,7 @@ public class Simulator {
 	 private void updateAnimals(double dt)  {
 		 for (Animal a : _animalList) {
 			 a.update(dt);
+			 _manager.update_animal_region(a);
 		 }
 	 }
 	 

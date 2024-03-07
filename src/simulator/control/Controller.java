@@ -63,7 +63,7 @@ public class Controller {
 
 		 result.put("in", _sim.as_JSON());
 		 while (_sim.get_time() <= t) {
-			 if (_sim.get_time() >= 40) {
+			 if (_sim.get_time() >= 4) {
 				 System.out.println("");
 			 }
 			 _sim.advance(dt);
