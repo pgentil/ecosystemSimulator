@@ -38,6 +38,9 @@ public class Sheep extends Animal{
 	
 	@Override
 	public void update(double dt) {
+		if (_desire > _desireToMate){
+			System.out.println("");
+		}
 		switch (_state) {
 		case DEAD:
 			return;

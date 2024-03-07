@@ -325,8 +325,8 @@ public class RegionManager implements AnimalMapView{
 		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos);
 		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight);
 		
-		Predicate<Animal> inRange = animal -> animalPos.distanceTo(animal.get_position()) > sightOfRange;
-		filter.and(inRange);
+		Predicate<Animal> notInRange = animal -> animalPos.distanceTo(animal.get_position()) > sightOfRange;
+		animalsInRange.removeIf(notInRange);
 		animalsInRange.removeIf(filter);
 
 		return animalsInRange;
