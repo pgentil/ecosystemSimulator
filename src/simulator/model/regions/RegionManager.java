@@ -77,6 +77,8 @@ public class RegionManager implements AnimalMapView{
 			y -= _cellHeight;
 			j++;
 		}
+		if(i >= 20 || j >= 15)
+			System.out.println("");
 		
 		ArrayList<Integer> r = new ArrayList<Integer>();
 		r.add(i);
@@ -239,19 +241,19 @@ public class RegionManager implements AnimalMapView{
 		double bottomLimit = (animalCoords.getY() + range >= _height ? _height : animalCoords.getY() + range);
 		double topLimit = (animalCoords.getY() - range < 0 ? 0 : animalCoords.getY() - range);
 		List<Integer> regionCoord = getRegionColAndRow(animalCoords);
-		int regionRow = regionCoord.get(0);
-		int regionCol = regionCoord.get(1);
+		int regionCol = regionCoord.get(0);
+		int regionRow = regionCoord.get(1);
 		
 		//how many rows and cols could the range of sight fully cover
 		double rangeRow = range;
-		int rows = 0;
-		while (rangeRow >= range) {
+		int rows = 1;
+		while (rangeRow > range) {
 			rangeRow -= _cellWidth;
 			++rows;
 		}
 		double rangeCol = range;
-		int cols = 0;
-		while (rangeCol >= range) {
+		int cols = 1;
+		while (rangeCol > range) {
 			rangeCol -= _cellHeight;
 			++cols;
 		}

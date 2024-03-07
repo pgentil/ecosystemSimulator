@@ -114,6 +114,8 @@ public abstract class Animal implements Entity, AnimalInfo{
 	}
 	public boolean outOfMap(double x, double y)
 	{
+		if (y >= 300)
+			System.out.println("");
 		double width = _region_mngr.get_width()-1;
 		double height = _region_mngr.get_height()-1;	
 		 

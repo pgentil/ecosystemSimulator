@@ -49,8 +49,13 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	
 	final void remove_animal(Animal a) {
 		int index = animalList.indexOf(a);
-		if (index != -1)
+		if (index != -1) {
 			animalList.remove(index);
+			if (a.get_diet() == Diet.HERBIVORE) {
+				herviborous_animals--;
+			}
+		}
+		
 	}
 	
 
