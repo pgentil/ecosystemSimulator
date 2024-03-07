@@ -98,7 +98,7 @@ public class Wolf extends Animal {
 			_age = _age + dt;
 			_energy = ensureNotBelow0(_energy, _times1point2*_times18*dt);
 			_desire = ensureNotOver100(_desire, _times30*dt);
-			if(_pos.distanceTo(_hunt_target.get_position()) > _close_to_dest)
+			if(_pos.distanceTo(_hunt_target.get_position()) < _close_to_dest)
 			{
 				_hunt_target._state = State.DEAD;
 				_hunt_target = null;
