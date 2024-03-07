@@ -247,14 +247,14 @@ public class RegionManager implements AnimalMapView{
 		//how many rows and cols could the range of sight fully cover
 		double rangeRow = range;
 		int rows = 1;
-		while (rangeRow > range) {
-			rangeRow -= _cellWidth;
+		while (rangeRow > _cellHeight) {
+			rangeRow -= _cellHeight;
 			++rows;
 		}
 		double rangeCol = range;
 		int cols = 1;
-		while (rangeCol > range) {
-			rangeCol -= _cellHeight;
+		while (rangeCol > _cellWidth) {
+			rangeCol -= _cellWidth;
 			++cols;
 		}
 		
