@@ -85,7 +85,7 @@ public class Controller {
 		 for (AnimalInfo a : animals)
 		 ol.add(new ObjInfo(a.get_genetic_code(), 
 		                    (int) a.get_position().getX(), 
-		                    (int) a.get_position().getY(),8));
+		                    (int) a.get_position().getY(),(int)Math.round(a.get_age())+2));
 		 
 		 return ol;
 	}
