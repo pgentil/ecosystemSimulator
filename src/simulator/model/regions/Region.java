@@ -17,33 +17,18 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 	static final double parameterFood2 = 5.0;
 	static final double parameterFood3 = 2.0;
 	
-	
 	protected List<Animal> animalList;
-	protected int herviborous_animals;
+	protected int herbivorous_animals; //used to maintain counting of herbivorous animals (for method get_food(Animal, double))
 	
-	
-	//REMOVE
-	/*
-	public static void main(String[] args) {
-		Region testR = new Region();
-		Animal a1 = new Animal("Juan");
-		Animal a2 = new Animal("Pablo");
-		
-		testR.add_animal(a1);
-		System.out.println(testR);
-		testR.add_animal(a2);
-		System.out.println(testR);
-	}
-	*/
 	
 	public Region() {
 		animalList = new ArrayList<Animal>();
-		herviborous_animals = 0;
+		herbivorous_animals = 0;
 	}
 	
 	final void add_animal(Animal a) {
 		if (a.get_diet() == Diet.HERBIVORE)
-			herviborous_animals++;
+			herbivorous_animals++;
 		animalList.add(a);
 	}
 	
@@ -52,15 +37,14 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		if (index != -1) {
 			animalList.remove(index);
 			if (a.get_diet() == Diet.HERBIVORE) {
-				herviborous_animals--;
+				herbivorous_animals--;
 			}
 		}
 		
 	}
 	
-
 	final List<Animal> getAnimals(){
-		List<Animal> aux = Collections.unmodifiableList(animalList); 
+		List<Animal> aux = Collections.unmodifiableList(animalList); //used unmodifiable list (only the list is unmodifiable the objects inside it are not)
 		return aux;
 	}
 
@@ -75,41 +59,5 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		 
 		return obj;
 	}
-	
-	
-	
-	
-	//METHODS TO TEST IMPLEMENTATION
-	public String toString() {
-		StringBuffer str = new StringBuffer();
 		
-		str.append("Animal List");
-		str.append(System.lineSeparator());
-		str.append(System.lineSeparator());
-		for( int i = 0; i < animalList.size(); ++i) {
-			str.append(animalList.get(i)); //ANIMALS NEED A toString() method
-			str.append(System.lineSeparator());
-		}
-		
-		return str.toString();
-	}
-	
-	
-//	public static void main(String[] args) throws IncorrectParametersException {
-//		Utils._rand.setSeed(2147483647l);
-//		Region r1 = new DefaultRegion();
-//		Animal a1 = new TestAnimal();
-//		r1.add_animal(a1);
-//		List<Animal> aux = r1.getAnimals();
-//		Animal a2 = aux.get(0);
-//		System.out.println(a2.get_genetic_code());
-//		Animal a1 = new Animal("Juan");
-//		Animal a2 = new Animal("Pablo");
-//		
-//		testR.add_animal(a1);
-//		System.out.println(testR);
-//		testR.add_animal(a2);
-//		System.out.println(testR);
-//	}
-	
 }

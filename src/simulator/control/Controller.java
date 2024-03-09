@@ -49,7 +49,7 @@ public class Controller {
 	 
 	 public void run(double t, double dt, boolean sv, OutputStream out) {
 
-		 JSONObject result = new JSONObject();
+		 JSONObject result = new JSONObject(); 
 
 		 //Given code
 		 SimpleObjectViewer view = null;
@@ -61,14 +61,14 @@ public class Controller {
 			 view.update(to_animals_info(_sim.get_animals()), _sim.get_time(), dt);
 		 }
 
-		 result.put("in", _sim.as_JSON());
+		 result.put("in", _sim.as_JSON()); //before simulation starts
 		 while (_sim.get_time() <= t) {
 			 _sim.advance(dt);
 			 if (sv) {
 				 view.update(to_animals_info(_sim.get_animals()), _sim.get_time(), dt);
 			 }
 		 }
-		 result.put("out", _sim.as_JSON());
+		 result.put("out", _sim.as_JSON()); //after simulation ended
 		 if (sv) { 
 			 view.close();
 		 }

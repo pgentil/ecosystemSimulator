@@ -251,16 +251,16 @@ public class RegionManager implements AnimalMapView{
 	
 
 	@Override 
-	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
+	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) { //Specified in AnimalMapView
 
 		Vector2D animalPos = e.get_position();
 		double sightOfRange = e.get_sight_range();
-		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos);
-		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight);
+		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos); //Method returns an optimistic prediction of the regions in sight
+		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight); //Method returns animals contained in the regions of regionsInSight
 		
-		Predicate<Animal> notInRange = animal -> animalPos.distanceTo(animal.get_position()) > sightOfRange;
-		animalsInRange.removeIf(notInRange);
-		animalsInRange.removeIf(filter);
+		Predicate<Animal> notInRange = animal -> animalPos.distanceTo(animal.get_position()) > sightOfRange; //If distance is greater than the range of sight
+		animalsInRange.removeIf(notInRange); //removes if not in range of sight
+		animalsInRange.removeIf(filter); //removes if [filter predicate] --> The filter predicate condition must be negated in order to remove all that do not satisfy the filter
 
 		return animalsInRange;
 	}

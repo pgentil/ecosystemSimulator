@@ -10,7 +10,7 @@ public class DefaultRegion extends Region{
 		double food = 0;
 		
 		if (a.get_diet() == Diet.HERBIVORE) 
-			food = parameterFood1 * Math.exp(-Math.max(0, herviborous_animals - parameterFood2) * parameterFood3) * dt;
+			food = parameterFood1 * Math.exp(-Math.max(0, herbivorous_animals - parameterFood2) * parameterFood3) * dt;
 		
 		return food;
 	}
