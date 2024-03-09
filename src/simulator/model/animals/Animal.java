@@ -66,7 +66,7 @@ public abstract class Animal implements Entity, AnimalInfo{
 		_baby = null;
 		_region_mngr = null;
 		_desire = 0.0;
-		_genetic_code = p1.get_genetic_code(); //can i do p1._genetic_code
+		_genetic_code = p1.get_genetic_code(); 
 		_diet = p1.get_diet();
 		_mate_strategy = p2._mate_strategy;
 		_energy = ( p1.get_energy() + p2.get_energy() ) / 2; 
@@ -74,14 +74,10 @@ public abstract class Animal implements Entity, AnimalInfo{
 		_sight_range = Utils.get_randomized_parameter( (p1.get_sight_range() + p2.get_sight_range())/2, 0.2 );
 		_speed = Utils.get_randomized_parameter((p1.get_speed()+p2.get_speed())/2, 0.2);
 	}
-//	@Override
-//	public void update(double dt) {
-//	
-//	}
+
 	
 	public void init(AnimalMapView reg_mngr)
 	{
-
 		_region_mngr = reg_mngr;
 		if (_pos == null)	
 			_pos = randomDestination();
@@ -96,7 +92,8 @@ public abstract class Animal implements Entity, AnimalInfo{
 				
 				
 	}
-	//prolly add it to pos
+	
+	//adjusts the position to be inside the map
 	public Vector2D adjustPos(double x, double y)
 	{
 		double width = _region_mngr.get_width()-1;
@@ -112,6 +109,8 @@ public abstract class Animal implements Entity, AnimalInfo{
 			y = (y + height);
 		return new Vector2D(x, y);
 	}
+	
+	//checks if a position is out of the map
 	public boolean outOfMap(double x, double y)
 	{
 		if (y >= 300)
@@ -134,7 +133,7 @@ public abstract class Animal implements Entity, AnimalInfo{
 		_pos = _pos.plus(_dest.minus(_pos).direction().scale(speed));
 	}
 	
-	public JSONObject as_JSON() //ni idea
+	public JSONObject as_JSON()
 	{
 		JSONObject json = new JSONObject();
         json.put("pos", _pos);
@@ -178,7 +177,8 @@ public abstract class Animal implements Entity, AnimalInfo{
 	public Vector2D get_destination(){
 		return _dest;
 	}
-		
+	
+	//a method that adds num1 to num2 and returns the sum ensuring it doesnt pass 100
 	protected double ensureNotOver100(double num1, double num2)
 	{
 		double sum = num1 + num2;
@@ -186,7 +186,7 @@ public abstract class Animal implements Entity, AnimalInfo{
 			sum = 100;
 		return sum;
 	}
-	
+	//a method that does num1 minus num2 and returns the subtraction ensuring it doesnt go below 0
 	protected double ensureNotBelow0(double num1, double num2)
 	{
 		double sub = num1 - num2;
@@ -194,7 +194,7 @@ public abstract class Animal implements Entity, AnimalInfo{
 			sub = 0;
 		return sub;
 	}
-	
+	// returns a 2DVector destination inside the map
 	protected Vector2D randomDestination() {
 		double width = _region_mngr.get_width()-1;
 		double height = _region_mngr.get_height()-1;	
@@ -203,6 +203,8 @@ public abstract class Animal implements Entity, AnimalInfo{
 		return randomDest;
 	}
 	
+	//The predicate works with inverted logic, since we then call removeIf with the predicate. In other words, if we want 
+	// 2 animals to mate, they need to have the same genetic code. So we remove all the animals with a different genetic code from the list
 	protected void selectMate() {
 		Predicate<Animal> differentCodePredicate = animal -> animal.get_genetic_code() != _genetic_code;
 		_mate_target = _mate_strategy.select(this,_region_mngr.get_animals_in_range(this, differentCodePredicate));

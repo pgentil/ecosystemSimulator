@@ -6,7 +6,8 @@ import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 
 public class Wolf extends Animal {
-	
+	//useful variables specific to Wolf
+
 	static final double _field_of_view = 50.0;
 	static final double _initial_velocity = 60.0;
 	static final double _max_age = 14.0;
@@ -39,8 +40,10 @@ public class Wolf extends Animal {
 		case DEAD:
 			return;
 		case NORMAL:
-			updateNormal(dt);
-			updateStateNormal();
+			updateNormal(dt);//point 1 of the normal state update
+			updateStateNormal();// point 2 of the normal state update
+			//we seperated it like this because in the mate and danger states, if it doesnt find the corresponding 
+			//target, it updates point as in point 1 of the normal state
 			break;
 		case MATE:
 			updateMate(dt);
@@ -94,7 +97,7 @@ public class Wolf extends Animal {
 			_hunt_target = _hunting_strategy.select(this,_region_mngr.get_animals_in_range(this, notHerbivorousPredicate));   
 		}
 		if(_hunt_target == null)
-			updateNormal(dt);
+			updateNormal(dt);//updates as in point 1 of the normal case
 		else
 		{
 			_dest = _hunt_target.get_position();
@@ -124,7 +127,7 @@ public class Wolf extends Animal {
 		if(_mate_target == null)
 		{
 			selectMate();
-			if(_mate_target == null) //should i out it outside of the if
+			if(_mate_target == null) 
 				updateNormal(dt);
 			
 		}
@@ -135,12 +138,14 @@ public class Wolf extends Animal {
 			_age = _age + dt;
 			_energy = ensureNotBelow0(_energy, _times18*_times1point2*dt);
 			_desire = ensureNotOver100(_desire, _times30*dt);
+			
+			//same problem as sheep
 			if(_pos.distanceTo(_mate_target.get_position()) < _close_to_dest)
 			{
 				_desire = 0.0;
 				_mate_target._desire = 0.0;
 				
-				if(!is_pregnant() && Utils._rand.nextDouble() <= 0.9) //and probability of 0.9 
+				if(!is_pregnant() && Utils._rand.nextDouble() <= 0.9) 
 				{
 					_baby = new Wolf(this, _mate_target);
 					_energy = ensureNotBelow0(_energy, 10.0);
@@ -148,18 +153,6 @@ public class Wolf extends Animal {
 				}
 			}
 		}
-//		else if(_pos.distanceTo(_mate_target.get_position()) < _close_to_dest)
-//		{
-//			_desire = 0.0;
-//			_mate_target._desire = 0.0;
-//			
-//			if(!is_pregnant() && Utils._rand.nextDouble() <= 0.9) //and probability of 0.9 
-//			{
-//				_baby = new Wolf(this, _mate_target);
-//				_energy = ensureNotBelow0(_energy, 10.0);
-//				_mate_target = null;
-//			}
-//		}
 		if(_energy < _energyFromFood)
 			changeToHungerWolf();
 		else if (_desire < _desireToMate)
@@ -169,6 +162,9 @@ public class Wolf extends Animal {
 	public SelectionStrategy get_hunting_strategy(){
 		return _hunting_strategy;
 	}
+	
+	//these 3 methods take the necessary steps to change the wolf's state
+
 	private void changeToNormalWolf()
 	{
 		_state = State.NORMAL;
