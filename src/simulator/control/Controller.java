@@ -63,9 +63,6 @@ public class Controller {
 
 		 result.put("in", _sim.as_JSON());
 		 while (_sim.get_time() <= t) {
-			 if (_sim.get_time() >= 35.4) {
-				 System.out.println("");
-			 }
 			 _sim.advance(dt);
 			 if (sv) {
 				 view.update(to_animals_info(_sim.get_animals()), _sim.get_time(), dt);

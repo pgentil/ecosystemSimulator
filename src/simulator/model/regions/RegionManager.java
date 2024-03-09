@@ -188,46 +188,11 @@ public class RegionManager implements AnimalMapView{
 	
 	
 	/**
-	 * Checks if a certain region is inside an area given its right, left, top and bottom limits (sides)
-	 * @param regionCol Column of the region
-	 * @param regionRow Row of the region
-	 * @param leftLimit left limit (left side) of the area
-	 * @param rightLimit right limit (right side) of the area
-	 * @param topLimit top limit (top side) of the area
-	 * @param bottomLimit bottom limit (bottom side) of the area
-	 * @return True if the region is inside the specified area
-	 */
-	private boolean regionInsideLimits(int regionCol,
-			int regionRow,
-			double leftLimit,
-			double rightLimit,
-			double topLimit,
-			double bottomLimit)
-	{
-		return (leftLimit < regionCol * _cellWidth &&
-				rightLimit >= (regionCol + 1) * _cellWidth &&
-				topLimit < regionRow * _cellHeight &&
-				bottomLimit >= (regionRow + 1) * _cellHeight);
-	}
-	
-
-	/**
-	 * Checks if a certain coordinate is in a region given its column and row in the map.
-	 * @param regionCol Column of the region
-	 * @param regionRow Row of the region
-	 * @param coords Coordinates given in the format of a Vector2D
-	 * @return True if the coordinates are effectively inside the given region, false otherwise
-	 */
-	private boolean coordInRegion(int regionCol, int regionRow, Vector2D coords) {
-		double x = coords.getX();
-		double y = coords.getY();
-		return (x >= regionCol * _cellWidth && x < (regionCol + 1) * _cellWidth && y >= regionRow * _cellHeight && y < (regionRow + 1) * _cellHeight);
-	}
-	
-	/**
-	 * Exhaustive method to check and return the regions that are within the range of sight given a position (coordinates in Vector2D format).
-	 * It is an exhaustive method as it tries to cover the radius of the range of sight around the animal in the map with points, and traverses the regions to check if 
-	 * they contain any of this points using the coordInRegion method.
+	 * Optimistic prediction of the regions that may be covered by the range of sight given some coordinates. It traverses the regions that surround the 
+	 * coordinates. The amount of cells traversed depends on two variables, one being the range of sight of the animal and the other being
+	 * the dimensions of the cells. The area traversed will always be symmetric in relation to the column and row that correspond to the coordinates.
+	 * It will traverse the area delimited by these ranges: [x_coord - i - 1, x_coord + i + 1], [y_coord - j - 1, y_coord + j + 1], where i = div(range, _cellWidth)
+	 * and j = div(range, _cellHeight), div(n, m) = [max(k) : 0 <= k and k is element of the integers : k * m < n]
 	 * 
 	 * @param range Range of sight (distance) of animal
 	 * @param animalCoords Coordinates of the animal given in Vector2D 
@@ -235,27 +200,22 @@ public class RegionManager implements AnimalMapView{
 	 */
 	private List<Region> getRegionsInSight(double range, final Vector2D animalCoords){
 		List<Region> regionsInSight = new ArrayList<Region>();
-		//out of bound checking
-		double rightLimit = (animalCoords.getX() + range >= _width ? _width : animalCoords.getX() + range); //checks if sight of range is inside map
-		double leftLimit = (animalCoords.getX() - range < 0 ? 0 : animalCoords.getX() - range);
-		double bottomLimit = (animalCoords.getY() + range >= _height ? _height : animalCoords.getY() + range);
-		double topLimit = (animalCoords.getY() - range < 0 ? 0 : animalCoords.getY() - range);
 		List<Integer> regionCoord = getRegionColAndRow(animalCoords);
 		int regionCol = regionCoord.get(0);
 		int regionRow = regionCoord.get(1);
 		
-		//how many rows and cols could the range of sight fully cover
+		//how many rows and cols could the range of sight fully cover (optimistic range of sight) [animals that are included due to the optimistic prediction are excluded by the comparison of the actual distance to the animal]
 		double rangeRow = range;
-		int rows = 1;
+		int rows = 1; //starts from 1, as with any range of sight there could be at least 1 region, other than the actual one, that is being sighted. 
 		while (rangeRow > _cellHeight) {
 			rangeRow -= _cellHeight;
-			++rows;
+			++rows; //for every time the sight of range is still bigger than the region's dimension, one row more on top and bottom of the animal will be traversed
 		}
 		double rangeCol = range;
-		int cols = 1;
+		int cols = 1; //idem
 		while (rangeCol > _cellWidth) {
 			rangeCol -= _cellWidth;
-			++cols;
+			++cols;//for every time the sight of range is still bigger than the region's dimension, one column more on left and right of the animal will be traversed
 		}
 		
 		for (int i = regionCol - cols; i <= regionCol + cols; ++i) {
@@ -264,40 +224,11 @@ public class RegionManager implements AnimalMapView{
 					i < _cols &&
 					j >= 0 &&
 					j < _rows )
-					//&&  regionInsideLimits(i, j, leftLimit, rightLimit, topLimit, bottomLimit))
 				{
 					regionsInSight.add(_regions[i][j]);
 				}
 			}
 		}
-		
-		
-//		final int accuracy1 = 12;
-//		final int accuracy2 = 4;
-//		List<Vector2D> coordsInSight = new ArrayList<Vector2D>();
-//		
-//		for (int i = 0; i < accuracy1; ++i) {
-//			for (int j = 0; j < accuracy2; ++j) {
-//				coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j, animalCoords.getY() + Math.sin(i * 2 * Math.PI / accuracy1) * (range / accuracy2) * j));
-//			}
-//			
-//		}
-//		coordsInSight.add(animalCoords);
-//		
-//		for (int i = 0; i < _cols; ++i) {
-//			for (int j = 0; j < _rows; ++j) {
-//				boolean included = false;
-//				int k = 0;
-//				
-//				while (k < accuracy1 * accuracy2 + 1 && !included) {
-//					if (coordInRegion(i, j, coordsInSight.get(k))) {
-//						regionsInSight.add(_regions[i][j]);
-//						included = true;
-//					}
-//					++k;
-//				}
-//			}
-//		}
 		
 		return regionsInSight;
 	}
@@ -317,7 +248,9 @@ public class RegionManager implements AnimalMapView{
 		return animals;
 	}
 	
-	@Override
+	
+
+	@Override 
 	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
 
 		Vector2D animalPos = e.get_position();

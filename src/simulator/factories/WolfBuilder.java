@@ -59,7 +59,7 @@ public class WolfBuilder extends Builder<Animal>{
 		try {
 			wolf = new Wolf(selection_strategy_factory.create_instance(mateStrat), selection_strategy_factory.create_instance(huntStrat), pos);
 		} catch (IncorrectParametersException e) {
-			assert(1 == 0);
+			assert(1 == 0); //unreachable statement as we know that the constructor in this case will never throw an exception
 		}
 		
 		return wolf;
