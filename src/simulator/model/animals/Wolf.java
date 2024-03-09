@@ -8,6 +8,12 @@ import simulator.misc.Vector2D;
 public class Wolf extends Animal {
 	//useful variables specific to Wolf
 
+	
+	/*
+	 * Functionality of Wolf is similar to that of Sheep. Methods are further explained in Sheep.java. 
+	 * */
+	
+	
 	static final double _field_of_view = 50.0;
 	static final double _initial_velocity = 60.0;
 	static final double _max_age = 14.0;
