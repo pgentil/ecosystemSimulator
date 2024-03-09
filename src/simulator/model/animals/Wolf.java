@@ -54,7 +54,11 @@ public class Wolf extends Animal {
 		
 		double x = _pos.getX(); double y =  _pos.getY(); 
 		if(outOfMap(x, y))
+		{
+			_pos = adjustPos(_pos.getX(), _pos.getY());
 			changeToNormalWolf();//_state = State.NORMAL;
+		}
+			
 		if(_energy == _min_energy || _age > _max_age)
 			_state = State.DEAD;
 		if(!_state.equals(State.DEAD))
