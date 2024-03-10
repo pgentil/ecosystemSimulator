@@ -27,6 +27,7 @@ public class Wolf extends Animal {
 	
 	Animal _hunt_target;
 	SelectionStrategy _hunting_strategy;
+	State auxState;
 	
 	public Wolf(SelectionStrategy mate_strategy, SelectionStrategy hunting_strategy, Vector2D pos) throws IncorrectParametersException {
 		super("Wolf", Diet.CARNIVORE, _field_of_view, _initial_velocity, mate_strategy, pos);
@@ -97,7 +98,9 @@ public class Wolf extends Animal {
 	
 	private void updateHunger(double dt)
 	{
-		if(_hunt_target == null || _hunt_target.get_state().equals(State.DEAD) || _pos.distanceTo(_hunt_target.get_position()) > _field_of_view)
+		if(_hunt_target != null)
+			auxState = _hunt_target.get_state(); //encapsulation
+		if(_hunt_target == null || auxState.equals(State.DEAD) || _pos.distanceTo(_hunt_target.get_position()) > _field_of_view)
 		{
 			Predicate<Animal> notHerbivorousPredicate = animal -> animal.get_diet() != Diet.HERBIVORE;
 			_hunt_target = _hunting_strategy.select(this,_region_mngr.get_animals_in_range(this, notHerbivorousPredicate));   
@@ -128,8 +131,12 @@ public class Wolf extends Animal {
 	}
 	private void updateMate(double dt)
 	{
-		if(_mate_target != null && ( _mate_target.get_state().equals(State.DEAD) || _pos.distanceTo(_mate_target.get_position()) > _sight_range ))
-			_mate_target = null;
+		if(_mate_target != null) // && ( _mate_target.get_state().equals(State.DEAD) || _pos.distanceTo(_mate_target.get_position()) > _sight_range ))
+		{
+			State aux_mate_state = _mate_target.get_state(); //encapsulation
+			if( aux_mate_state.equals(State.DEAD) || _pos.distanceTo(_mate_target.get_position()) > _sight_range )
+				_mate_target = null;
+		}
 		if(_mate_target == null)
 		{
 			selectMate();

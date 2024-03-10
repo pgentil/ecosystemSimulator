@@ -104,8 +104,12 @@ public class Sheep extends Animal{
 	
 	private void updateDanger(double dt)
 	{
-		if(_danger_source != null && _danger_source.get_state().equals(State.DEAD))
-			_danger_source = null;
+		if(_danger_source != null)
+		{
+			State aux_danger_state = _danger_source.get_state(); //encapsulation
+			if(aux_danger_state.equals(State.DEAD))
+				_danger_source = null;
+		}
 		if(_danger_source == null)
 			updateNormal(dt); //updates as in point 1 of the normal case
 		else
@@ -131,8 +135,13 @@ public class Sheep extends Animal{
 	
 	private void updateMate(double dt)
 	{
-		if(_mate_target != null && ( _mate_target.get_state().equals(State.DEAD) || _pos.distanceTo(_mate_target.get_position()) > _sight_range ))
-			_mate_target = null;
+		if(_mate_target != null)
+		{
+			State aux_mate_state = _mate_target.get_state(); //encapsulation
+			if(aux_mate_state.equals(State.DEAD) || _pos.distanceTo(_mate_target.get_position()) > _sight_range )
+				_mate_target = null;
+		}
+			
 		if(_mate_target == null)
 		{
 			selectMate();
