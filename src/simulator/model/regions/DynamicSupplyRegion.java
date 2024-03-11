@@ -18,7 +18,6 @@ public class DynamicSupplyRegion extends Region{
 		if (Utils._rand.nextDouble() < 0.5) {
 			_food += dt * _factor;
 		}
-		
 	}
 
 	@Override
@@ -26,6 +25,7 @@ public class DynamicSupplyRegion extends Region{
 		double food = 0;
 		if (a.get_diet() == Diet.HERBIVORE) {
 			food = Math.min(_food, parameterFood1 * Math.exp(-Math.max(0, herbivorous_animals - parameterFood2) * parameterFood3) * dt);
+			_food -= food;
 		}
 		return food;
 	}
