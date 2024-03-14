@@ -8,9 +8,11 @@ import simulator.model.regions.Region;
 public class DefaultRegionBuilder extends Builder<Region>{
 
 	public DefaultRegionBuilder() {
-		super("default", "DefaultRegion");
+		super("default", "Infinite Food Supply");
 		// TODO Auto-generated constructor stub
 	}
+	
+	
 
 	@Override
 	protected DefaultRegion create_instance(JSONObject data) {

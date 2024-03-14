@@ -1,6 +1,10 @@
 package simulator.model.regions;
 
+import java.util.List;
+import java.util.Collections;
+
 import simulator.model.animals.Animal;
+import simulator.model.animals.AnimalInfo;
 import simulator.model.animals.Diet;
 
 public class DefaultRegion extends Region{
@@ -20,5 +24,15 @@ public class DefaultRegion extends Region{
 		//DOES NOTHING
 		
 	}
+	
+	public String toString() {
+		return "Default region";
+	}
+
+	@Override
+	public List<AnimalInfo> getAnimalsInfo() {
+		return Collections.unmodifiableList(animalList); 
+	}
+
 
 }

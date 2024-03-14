@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 import org.json.JSONArray;
@@ -284,6 +285,12 @@ public class RegionManager implements AnimalMapView{
 		
 		return json;
 		
+	}
+
+
+	@Override
+	public Iterator<RegionData> iterator() {
+		return null;
 	}
 
 }

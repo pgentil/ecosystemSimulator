@@ -1,7 +1,12 @@
 package simulator.model.regions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import simulator.misc.Utils;
 import simulator.model.animals.Animal;
+import simulator.model.animals.AnimalInfo;
 import simulator.model.animals.Diet;
 
 public class DynamicSupplyRegion extends Region{
@@ -28,6 +33,15 @@ public class DynamicSupplyRegion extends Region{
 			_food -= food;
 		}
 		return food;
+	}
+	
+	public String toString() {
+		return "Dynamic region";
+	}
+	
+	@Override
+	public List<AnimalInfo> getAnimalsInfo() {
+		return Collections.unmodifiableList(animalList); 
 	}
 
 }

@@ -26,11 +26,15 @@ public class Simulator {
 	 public Simulator(int cols, int rows, int width, int height,
 			 Factory<Animal> animals_factory, Factory<Region> regions_factory) 
 	 {
+		 init(cols, rows, width, height);
+		 this._animal_factory = animals_factory;
+		 this._region_factory = regions_factory;
+	 }
+	 
+	 private void init(int cols, int rows, int width, int height){
 		 this._time = 0;
 		 this._manager = new RegionManager(cols, rows, width, height);
 		 this._animalList = new ArrayList<Animal>();
-		 this._animal_factory = animals_factory;
-		 this._region_factory = regions_factory;
 	 }
 	 
 	 private void set_region(int row, int col, Region r) {
@@ -127,6 +131,10 @@ public class Simulator {
 		 
 
 		 return jo;
+	 }
+	 
+	 public void reset(int cols, int rows, int width, int height) {
+		 init(cols, rows, width, height);
 	 }
 	 
 //	 public static void main(String[] args) throws IncorrectParametersException {

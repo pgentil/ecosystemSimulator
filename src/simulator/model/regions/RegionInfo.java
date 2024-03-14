@@ -1,7 +1,10 @@
 package simulator.model.regions;
 
+import java.util.List;
+
 import simulator.model.JSONable;
+import simulator.model.animals.AnimalInfo;
 
 public interface RegionInfo extends JSONable{
-	//Left for future assignment
+	public List<AnimalInfo> getAnimalsInfo();
 }
