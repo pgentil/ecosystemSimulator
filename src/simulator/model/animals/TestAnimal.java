@@ -25,4 +25,10 @@ public class TestAnimal extends Animal{
 		return false;
 	}
 
+	@Override
+	public void update(double dt) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
