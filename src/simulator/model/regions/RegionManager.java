@@ -27,8 +27,8 @@ public class RegionManager implements AnimalMapView{
 		this._height = height;
 		this._cols = cols;
 		this._rows = rows;
-		this._cellHeight = height / rows;
-		this._cellWidth = width / cols;
+		this._cellHeight = (double)height / rows;
+		this._cellWidth = (double)width / cols;
 		this._regions = new Region[cols][rows];
 		for (int i = 0; i < cols; ++i) {
 			for (int j = 0; j < rows; j++) {
@@ -63,8 +63,8 @@ public class RegionManager implements AnimalMapView{
 	 * @param a - Animal instance
 	 * @return Coordinates of the region where the animal should be. list[0] = col, list[1] = row
 	 * 	 */
-	private List<Integer> getRegionColAndRow(Animal a) {
-		Vector2D v = a.get_position();
+	private List<Integer> getRegionColAndRow(Vector2D a) {
+		Vector2D v = a;
 		int i = 0;
 		int j = 0;
 		double x = v.getX(), y = v.getY();
@@ -77,6 +77,8 @@ public class RegionManager implements AnimalMapView{
 			y -= _cellHeight;
 			j++;
 		}
+		if(i >= 20 || j >= 15)
+			System.out.println("");
 		
 		ArrayList<Integer> r = new ArrayList<Integer>();
 		r.add(i);
@@ -93,10 +95,14 @@ public class RegionManager implements AnimalMapView{
 	 */
 	public void register_animal(Animal a) {
 		a.init(this);
-		List<Integer> coords = getRegionColAndRow(a);
+		List<Integer> coords = getRegionColAndRow(a.get_position());
+		
 		int i = coords.get(0);
 		int j = coords.get(1);
-		Region region = _regions[i][j];
+		assert(i >= 0 && i < _cols && j >= 0 && j < _rows);
+		
+		Region region = _regions[i][j]; 
+
 		region.add_animal(a);
 		_animal_region.put(a, region); 
 	}
@@ -116,7 +122,7 @@ public class RegionManager implements AnimalMapView{
 	 * @param a - Animal instance
 	 */
 	public void update_animal_region(Animal a) {
-		List<Integer> coords = getRegionColAndRow(a);
+		List<Integer> coords = getRegionColAndRow(a.get_position());
 		int i = coords.get(0);
 		int j = coords.get(1);
 		Region registeredRegion = _animal_region.get(a);
@@ -163,13 +169,13 @@ public class RegionManager implements AnimalMapView{
 	}
 
 	@Override
-	public int get_region_width() {
-		return (int) _cellWidth;
+	public double get_region_width() {
+		return _cellWidth;
 	}
 
 	@Override
-	public int get_region_height() {
-		return (int) _cellHeight;
+	public double get_region_height() {
+		return _cellHeight;
 	}
 
 	
@@ -179,53 +185,47 @@ public class RegionManager implements AnimalMapView{
 		
 		return actualRegion.get_food(a, dt);
 	}
-
-	/**
-	 * Checks if a certain coordinate is in a region given its column and row in the map.
-	 * @param regionCol Column of the region
-	 * @param regionRow Row of the region
-	 * @param coords Coordinates given in the format of a Vector2D
-	 * @return True if the coordinates are effectively inside the given region, false otherwise
-	 */
-	private boolean coordInRegion(int regionCol, int regionRow, Vector2D coords) {
-		double x = coords.getX();
-		double y = coords.getY();
-		return (x >= regionCol * _cellWidth && x < (regionCol + 1) * _cellWidth && y >= regionRow * _cellHeight && y < (regionRow + 1) * _cellHeight);
-	}
+	
 	
 	/**
-	 * Exhaustive method to check and return the regions that are within the range of sight given a position (coordinates in Vector2D format).
-	 * It is an exhaustive method as it tries to cover the radius of the range of sight around the animal in the map with points, and traverses the regions to check if 
-	 * they contain any of this points using the coordInRegion method.
+	 * Optimistic prediction of the regions that may be covered by the range of sight given some coordinates. It traverses the regions that surround the 
+	 * coordinates. The amount of cells traversed depends on two variables, one being the range of sight of the animal and the other being
+	 * the dimensions of the cells. The area traversed will always be symmetric in relation to the column and row that correspond to the coordinates.
+	 * It will traverse the area delimited by these ranges: [x_coord - i - 1, x_coord + i + 1], [y_coord - j - 1, y_coord + j + 1], where i = div(range, _cellWidth)
+	 * and j = div(range, _cellHeight), div(n, m) = [max(k) : 0 <= k and k is element of the integers : k * m < n]
 	 * 
 	 * @param range Range of sight (distance) of animal
 	 * @param animalCoords Coordinates of the animal given in Vector2D 
 	 * @return List of regions that are within range of sight of the animal
 	 */
 	private List<Region> getRegionsInSight(double range, final Vector2D animalCoords){
-		final int accuracy = 20;
 		List<Region> regionsInSight = new ArrayList<Region>();
-		List<Vector2D> coordsInSight = new ArrayList<Vector2D>();
+		List<Integer> regionCoord = getRegionColAndRow(animalCoords);
+		int regionCol = regionCoord.get(0);
+		int regionRow = regionCoord.get(1);
 		
-		for (int i = 0; i < accuracy; ++i) {
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (range / 4), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (range / 4)));
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (range / 2), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (range / 2)));
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * (3 * range / 4), animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * (3 * range / 4)));
-			coordsInSight.add(new Vector2D(animalCoords.getX() + Math.cos(i * 2 * Math.PI / 20) * range, animalCoords.getY() + Math.sin(i * 2 * Math.PI / 20) * range));
+		//how many rows and cols could the range of sight fully cover (optimistic range of sight) [animals that are included due to the optimistic prediction are excluded by the comparison of the actual distance to the animal]
+		double rangeRow = range;
+		int rows = 1; //starts from 1, as with any range of sight there could be at least 1 region, other than the actual one, that is being sighted. 
+		while (rangeRow > _cellHeight) {
+			rangeRow -= _cellHeight;
+			++rows; //for every time the sight of range is still bigger than the region's dimension, one row more on top and bottom of the animal will be traversed
 		}
-		coordsInSight.add(animalCoords);
+		double rangeCol = range;
+		int cols = 1; //idem
+		while (rangeCol > _cellWidth) {
+			rangeCol -= _cellWidth;
+			++cols;//for every time the sight of range is still bigger than the region's dimension, one column more on left and right of the animal will be traversed
+		}
 		
-		for (int i = 0; i < _cols; ++i) {
-			for (int j = 0; j < _rows; ++j) {
-				boolean included = false;
-				int k = 0;
-				
-				while (k < accuracy * 4 + 1 && !included) {
-					if (coordInRegion(i, j, coordsInSight.get(k))) {
-						regionsInSight.add(_regions[i][j]);
-						included = true;
-					}
-					++k;
+		for (int i = regionCol - cols; i <= regionCol + cols; ++i) {
+			for (int j = regionRow - rows; j <= regionRow + rows; ++j) {
+				if (i >= 0 &&
+					i < _cols &&
+					j >= 0 &&
+					j < _rows )
+				{
+					regionsInSight.add(_regions[i][j]);
 				}
 			}
 		}
@@ -248,16 +248,19 @@ public class RegionManager implements AnimalMapView{
 		return animals;
 	}
 	
-	@Override
-	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) {
+	
+
+	@Override 
+	public List<Animal> get_animals_in_range(Animal e, Predicate<Animal> filter) { //Specified in AnimalMapView
+
 		Vector2D animalPos = e.get_position();
 		double sightOfRange = e.get_sight_range();
-		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos);
-		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight);
+		List<Region> regionsInSight = getRegionsInSight(sightOfRange, animalPos); //Method returns an optimistic prediction of the regions in sight
+		List<Animal> animalsInRange = getAnimalsInRegions(regionsInSight); //Method returns animals contained in the regions of regionsInSight
 		
-		Predicate<Animal> inRange = animal -> animalPos.distanceTo(animal.get_position()) > sightOfRange;
-		filter.and(inRange);
-		animalsInRange.removeIf(filter);
+		Predicate<Animal> notInRange = animal -> animalPos.distanceTo(animal.get_position()) > sightOfRange; //If distance is greater than the range of sight
+		animalsInRange.removeIf(notInRange); //removes if not in range of sight
+		animalsInRange.removeIf(filter); //removes if [filter predicate] --> The filter predicate condition must be negated in order to remove all that do not satisfy the filter
 
 		return animalsInRange;
 	}

@@ -64,33 +64,54 @@ public class Simulator {
 		 return _time;
 	 }
 	 
+	 /**
+	  * Removes dead animals from simulation.
+	  */
 	 private void removeDead() {
-		 Predicate<Animal> filterNotDead = animal -> animal.get_state() != State.DEAD;
+		 Predicate<Animal> filterNotDead = animal -> animal.get_state() != State.DEAD; //Predicate: if not dead
 		 List<Animal> deadAnimals = new ArrayList<Animal>();
 		 
-		 deadAnimals.addAll(_animalList);
-		 deadAnimals.removeIf(filterNotDead);
+		 deadAnimals.addAll(_animalList); //adss all animals from list
+		 deadAnimals.removeIf(filterNotDead); //removes if not dead
 		 
-		 for (Animal a: deadAnimals) {
+		 for (Animal a: deadAnimals) { //for all dead animals
 			 _manager.unregister_animal(a);
 			 _animalList.remove(a);
 		 }
 	 }
 	 
+	 /**
+	  * Updates the state of the animals.
+	  * @param dt - delta time of simulation.
+	  */
 	 private void updateAnimals(double dt)  {
 		 for (Animal a : _animalList) {
 			 a.update(dt);
+			 _manager.update_animal_region(a);
 		 }
 	 }
 	 
+	 /**
+	  * Method in charge of deploying offsprings in the simulation
+	  */
 	 private void offspringCreation() {
+		 List<Animal> babyList = new ArrayList<Animal>(); 
 		 for (Animal a : _animalList) {
 			 if (a.is_pregnant()) {
-				 add_animal(a.deliver_baby());
+				 Animal baby = a.deliver_baby();
+				 babyList.add(baby);
 			 }
+		 }
+		 for (Animal baby: babyList) {
+			 add_animal(baby);
 		 }
 	 }
 	 
+	 /**
+	  * Advances the simulation by delta time. Removes dead animals, updates the living ones, updates regions and 
+	  * delivers offsprings into the simulation.
+	  * @param dt - delta time of simulation.
+	  */
 	 public void advance(double dt) {
 		 _time += dt;
 		 removeDead();
@@ -106,7 +127,6 @@ public class Simulator {
 		 
 
 		 return jo;
-
 	 }
 	 
 //	 public static void main(String[] args) throws IncorrectParametersException {

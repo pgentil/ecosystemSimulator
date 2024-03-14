@@ -35,21 +35,21 @@ public class Controller {
 					 }
 				 }
 			 }
-			 //Retrieving animals
-			 JSONArray jAnimals = data.getJSONArray("animals");
-			 for (int i = 0; i < jRegions.length(); ++i) {
-				 JSONObject a_json = jAnimals.getJSONObject(i);
-				 int amount = a_json.getInt("amount"); //amount of specified animal
-				 for (int j = 0; j < amount; ++j){
-					 _sim.add_animal(a_json.getJSONObject("spec"));
-				 }
+		 }
+		//Retrieving animals
+		 JSONArray jAnimals = data.getJSONArray("animals");
+		 for (int i = 0; i < jAnimals.length(); ++i) {
+			 JSONObject a_json = jAnimals.getJSONObject(i);
+			 int amount = a_json.getInt("amount"); //amount of specified animal
+			 for (int j = 0; j < amount; ++j){
+				 _sim.add_animal(a_json.getJSONObject("spec"));
 			 }
 		 }
 	 }
 	 
 	 public void run(double t, double dt, boolean sv, OutputStream out) {
 
-		 JSONObject result = new JSONObject();
+		 JSONObject result = new JSONObject(); 
 
 		 //Given code
 		 SimpleObjectViewer view = null;
@@ -61,14 +61,14 @@ public class Controller {
 			 view.update(to_animals_info(_sim.get_animals()), _sim.get_time(), dt);
 		 }
 
-		 result.put("in", _sim.as_JSON());
+		 result.put("in", _sim.as_JSON()); //before simulation starts
 		 while (_sim.get_time() <= t) {
 			 _sim.advance(dt);
 			 if (sv) {
 				 view.update(to_animals_info(_sim.get_animals()), _sim.get_time(), dt);
 			 }
 		 }
-		 result.put("out", _sim.as_JSON());
+		 result.put("out", _sim.as_JSON()); //after simulation ended
 		 if (sv) { 
 			 view.close();
 		 }
@@ -82,7 +82,7 @@ public class Controller {
 		 for (AnimalInfo a : animals)
 		 ol.add(new ObjInfo(a.get_genetic_code(), 
 		                    (int) a.get_position().getX(), 
-		                    (int) a.get_position().getY(),8));
+		                    (int) a.get_position().getY(),(int)Math.round(a.get_age())+2));
 		 
 		 return ol;
 	}
