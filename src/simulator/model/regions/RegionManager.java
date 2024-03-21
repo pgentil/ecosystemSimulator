@@ -2,6 +2,7 @@ package simulator.model.regions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -290,7 +291,46 @@ public class RegionManager implements AnimalMapView{
 
 	@Override
 	public Iterator<RegionData> iterator() {
-		return null;
+		
+		return new Iterator<RegionData>() {
+			
+			int col = _cols;
+			int row = -1;
+			
+			@Override
+			public boolean hasNext() {
+				return col  + 1 < _cols || row + 1 < _rows;
+			}
+
+			@Override
+			public RegionData next() {
+				if (!hasNext()) {
+			        throw new NoSuchElementException();
+			    }
+				
+				if (col + 1 < _cols) {
+					++col;
+				}
+				else if (row + 1 < _rows) {
+					++row;
+					col = 0;
+				}
+				
+				RegionData data = new RegionData(row, col, _regions[col][row]);
+				return data;
+			}
+			
+		};
+	}
+	
+	
+	public static void main(String[] args) {
+		RegionManager rm = new RegionManager(10, 10, 1000, 1000);
+		for (RegionData d: rm) {
+			System.out.println(d.row() + " " + d.col());
+		}
 	}
 
 }
+
+

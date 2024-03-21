@@ -236,6 +236,7 @@ public class Main {
 		return _strategy_factory;
 	}
 
+	/*
 	public static void main(String[] args) {
 		Utils._rand.setSeed(2147483647l);
 		try {
@@ -246,5 +247,6 @@ public class Main {
 			e.printStackTrace();
 		}
 	} 
+	*/
 	
 }
