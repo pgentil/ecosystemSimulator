@@ -292,10 +292,10 @@ public class RegionManager implements AnimalMapView{
 	@Override
 	public Iterator<RegionData> iterator() {
 		
-		return new Iterator<RegionData>() {
+		return new Iterator<RegionData>() { //declaration of iterator for the region manager
 			
 			int col = _cols;
-			int row = -1;
+			int row = -1; // THE ITERATOR RETURNED FROM THE INITIAL CONSTRUCTOR IS NOT POINTING TO A VALID ELEMENT, THIS IS TO MAKE THE FOR EACH LOOP WORK
 			
 			@Override
 			public boolean hasNext() {
