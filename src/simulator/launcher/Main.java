@@ -235,6 +235,18 @@ public class Main {
 	public static Factory<SelectionStrategy> getStrategyFactory(){
 		return _strategy_factory;
 	}
+	
+	public static Factory<Animal> getAnimalFactory(){
+		return _animal_factory;
+	}
+	
+	public static Factory<Region> getRegionFactory(){
+		return _region_factory;
+	}
+	
+	public double getDeltaTime(){
+		return _delta_time;
+	}
 
 	/*
 	public static void main(String[] args) {
