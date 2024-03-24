@@ -1,6 +1,7 @@
 package simulator.model;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.json.JSONObject;
@@ -14,14 +15,16 @@ import simulator.model.regions.MapInfo;
 import simulator.model.regions.Region;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
-public class Simulator {
+public class Simulator implements Observable<EcoSysObserver>{
 	
 	private RegionManager _manager;
 	private List<Animal> _animalList;
 	private double _time;
 	private Factory<Animal> _animal_factory;
 	private Factory<Region> _region_factory;
+	private Set<EcoSysObserver> _observerList;
 	
 	 public Simulator(int cols, int rows, int width, int height,
 			 Factory<Animal> animals_factory, Factory<Region> regions_factory) 
@@ -29,16 +32,21 @@ public class Simulator {
 		 init(cols, rows, width, height);
 		 this._animal_factory = animals_factory;
 		 this._region_factory = regions_factory;
+		 
 	 }
 	 
 	 private void init(int cols, int rows, int width, int height){
 		 this._time = 0;
 		 this._manager = new RegionManager(cols, rows, width, height);
 		 this._animalList = new ArrayList<Animal>();
+		 this._observerList = new HashSet<EcoSysObserver>();
 	 }
 	 
 	 private void set_region(int row, int col, Region r) {
 		 _manager.set_region(row, col, r);
+		 for (EcoSysObserver o: _observerList) {
+			 o.onRegionSet(row, col, _manager, r);
+		 }
 	 }
 	 
 	 public void set_region(int row, int col, JSONObject r_json) { 
@@ -48,6 +56,9 @@ public class Simulator {
 	 private void add_animal(Animal a) { //change them to public when debugging
 		 _animalList.add(a);
 		 _manager.register_animal(a);
+		 for (EcoSysObserver o: _observerList) {
+			 o.onAnimalAdded(_time, _manager, Collections.unmodifiableList(_animalList), a);
+		 }
 	 }
 	 
 	 public void add_animal(JSONObject a_json) {
@@ -122,6 +133,9 @@ public class Simulator {
 		 updateAnimals(dt);
 		 _manager.update_all_regions(dt);
 		 offspringCreation();
+		 for (EcoSysObserver o: _observerList) {
+			 o.onAvanced(_time, _manager, Collections.unmodifiableList(_animalList), dt);
+		 }
 	 }
 	 
 	 public JSONObject as_JSON() {
@@ -135,7 +149,23 @@ public class Simulator {
 	 
 	 public void reset(int cols, int rows, int width, int height) {
 		 init(cols, rows, width, height);
+		 for (EcoSysObserver o: _observerList) { //Question about redundancy FIXME
+			 o.onReset(_time, _manager, Collections.unmodifiableList(_animalList));
+		 }
 	 }
+
+	@Override
+	public void addObserver(EcoSysObserver o) {
+		_observerList.add(o);
+		o.onRegister(_time, _manager, Collections.unmodifiableList(_animalList));
+		
+	}
+
+	@Override
+	public void removeObserver(EcoSysObserver o) {
+		_observerList.remove(o);
+		
+	}
 	 
 //	 public static void main(String[] args) throws IncorrectParametersException {
 //		 Simulator sim = new Simulator(10,10, 1000, 1000);
