@@ -11,6 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 class ControlPanel extends JPanel {
 	private Controller _ctrl;
@@ -54,6 +55,12 @@ class ControlPanel extends JPanel {
 		_quitButton.addActionListener((e) -> ViewUtils.quit(this));
 		_toolBar.add(_quitButton);
 		
+		// TODO Initialise _fc with a JfileChooser instance. In order for it
+		// to open in the examples directory, you can use the following code:
+		// _fc.setCurrentDirectory(new File(System.getProperty("user.dir")
+		// + "/resources/examples"));
+		_fc = new JFileChooser();
+		_fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/resources/examples"));
 		
 		//Open Button
 		_toolBar.add(Box.createGlue()); 
@@ -110,12 +117,7 @@ class ControlPanel extends JPanel {
 		
 
 		
-		// TODO Initialise _fc with a JfileChooser instance. In order for it
-		// to open in the examples directory, you can use the following code:
-		// _fc.setCurrentDirectory(new File(System.getProperty("user.dir")
-		// + "/resources/examples"));
-		_fc = new JFileChooser();
-		_fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/resources/examples"));
+		
 		
 		
 		

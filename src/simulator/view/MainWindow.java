@@ -30,7 +30,7 @@ public class MainWindow extends JFrame {
 		//TODO create the regions table.
 		//Use setPreferredSize(new Dimension(500, 250)) to fix its size
 		//TODO call ViewUtils.quit(MainWindow.this) in the windowClosing method
-		addWindowListener( … );
+//		addWindowListener(  ); TODO
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		pack();
 		setVisible(true);
