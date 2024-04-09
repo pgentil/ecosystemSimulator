@@ -1,21 +1,31 @@
 package simulator.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import simulator.control.Controller;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 class ControlPanel extends JPanel {
 	private Controller _ctrl;
-	private ChangeRegionsDialog _changeRegionsDialog;
+//	private ChangeRegionsDialog _changeRegionsDialog;
 	private JToolBar _toolBar;
 	private JFileChooser _fc;
 	private boolean _stopped = true; // used in the run/stop buttons
@@ -26,6 +36,8 @@ class ControlPanel extends JPanel {
 	private JButton _regionsButton;
 	private JButton _runButton;
 	private JButton _stopButton;
+	private JSpinner _steps;
+	private JTextField _deltaField;
 
 
 
@@ -41,19 +53,14 @@ class ControlPanel extends JPanel {
 		add(_toolBar, BorderLayout.PAGE_START);
 		
 		
+		
+		
 		// TODO create the different buttons/attributes and add them to the toolbar.
 		// Each of them should have a corresponding tooltip. You may use
 		// _toolBar.addSeparator() to add the vertical-line separator between
 		// those components that need it.
 		
-		// Quit Button
-		_toolBar.add(Box.createGlue()); // this aligns the button to the right
-		_toolBar.addSeparator();
-		_quitButton = new JButton();
-		_quitButton.setToolTipText("Quit");
-		_quitButton.setIcon(new ImageIcon("resources/icons/exit.png"));
-		_quitButton.addActionListener((e) -> ViewUtils.quit(this));
-		_toolBar.add(_quitButton);
+		
 		
 		// TODO Initialise _fc with a JfileChooser instance. In order for it
 		// to open in the examples directory, you can use the following code:
@@ -68,7 +75,27 @@ class ControlPanel extends JPanel {
 		_openButton = new JButton();
 		_openButton.setToolTipText("Open");
 		_openButton.setIcon(new ImageIcon("resources/icons/open.png"));
-		_openButton.addActionListener((e) -> _fc.showOpenDialog(ViewUtils.getWindow(this)));
+		_openButton.addActionListener((e) -> {
+			int returnVal = _fc.showOpenDialog(ViewUtils.getWindow(this));
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = _fc.getSelectedFile();
+				FileInputStream is = null;
+				try {
+					is = new FileInputStream(file);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+				JSONObject joFromFile = new JSONObject(new JSONTokener(is));
+				assert(joFromFile.has("cols") && joFromFile.has("rows") && joFromFile.has("width") && joFromFile.has("height"));
+				_ctrl.reset(joFromFile.getInt("cols"),
+						joFromFile.getInt("rows"),
+						joFromFile.getInt("width"),
+						joFromFile.getInt("height"));
+				_ctrl.load_data(joFromFile);
+			} //TODO else
+		});
+		_toolBar.add(_openButton, 0);
+
 		//wtf: 
 		//(2) when the user has selected a file, load it
 		//and parse the file contents into a JSONObject, reset the simulator using _ctrl.reset(...) with
@@ -80,15 +107,47 @@ class ControlPanel extends JPanel {
 		_viewerButton = new JButton();
 		_viewerButton.setToolTipText("View");
 		_viewerButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
-		_viewerButton.addActionListener((e) -> MapWindow _mapWindow = new MapWindow()); //MapWindow(Frame parent, Controller ctrl)
+		_toolBar.add(_viewerButton, 1);
+
+ 		//_viewerButton.addActionListener((e) -> MapWindow _mapWindow = new MapWindow()); //MapWindow(Frame parent, Controller ctrl)
 		
 		//regions Button
 		_toolBar.add(Box.createGlue()); 
-		_toolBar.addSeparator();
 		_regionsButton = new JButton();
 		_regionsButton.setToolTipText("Regions");
 		_regionsButton.setIcon(new ImageIcon("resources/icons/regions.png"));
-		_regionsButton.addActionListener((e) ->  _changeRegionsDialog.open(ViewUtils.getWindow(this)));
+		_toolBar.add(_regionsButton, 2);
+
+//		_regionsButton.addActionListener((e) ->  _changeRegionsDialog.open(ViewUtils.getWindow(this)));
+		
+		_steps = new JSpinner();
+		_deltaField = new JTextField();
+		
+		_toolBar.add(Box.createGlue()); 
+		_toolBar.addSeparator();
+		_steps.setPreferredSize(new Dimension(90, 1));
+		JLabel stepsLabel = new JLabel("Steps: ");
+		_toolBar.add(stepsLabel);
+		_toolBar.add(_steps, 4);
+		
+		int stepVlue = (int)_steps.getValue(); //buff idk
+		
+		
+		_toolBar.add(Box.createGlue()); 
+		_toolBar.addSeparator();
+		_deltaField.setPreferredSize(new Dimension(70, 1));
+		JLabel dTLabel = new JLabel(" Delta-Time: ");
+		_toolBar.add(dTLabel);
+		_toolBar.add(_deltaField, 5);
+		final double _deltaFieldVlue;
+		String value = _deltaField.getText();
+		
+		if (!value.equals(""))
+			_deltaFieldVlue = Integer.parseInt(_deltaField.getText());  //buff idk
+		else {
+			_deltaFieldVlue = 0;
+		}
+		
 		
 		//run button
 		_toolBar.add(Box.createGlue()); 
@@ -103,19 +162,35 @@ class ControlPanel extends JPanel {
 			_stopped = false;
 			//(2) get the delta-time value from the corresponding JTextField
 			
+			
 			//(3) call the run_sim method with the value of steps specified in the corresponding JSpinner:
-			run_sim(0,0); //idk how to get the values from the Jspinner
+			run_sim(stepVlue,_deltaFieldVlue); //idk how to get the values from the Jspinner
 		});
+		_toolBar.add(_runButton, 3);
+
 		
 		//stop button
 		_toolBar.add(Box.createGlue()); 
-		_toolBar.addSeparator();
-		_regionsButton = new JButton();
+		_stopButton = new JButton();
 		_stopButton.setToolTipText("Stop");
 		_stopButton.setIcon(new ImageIcon("resources/icons/stop.png"));
-		_stopButton.addActionListener((e) ->  _stopped = true);
+		_stopButton.addActionListener((e) -> {
+			_stopped = true;
+			});
+		_toolBar.add(_stopButton);
+		
+		
 		
 
+		
+		// Quit Button
+		_toolBar.add(Box.createGlue()); // this aligns the button to the right
+		_toolBar.addSeparator();
+		_quitButton = new JButton();
+		_quitButton.setToolTipText("Quit");
+		_quitButton.setIcon(new ImageIcon("resources/icons/exit.png"));
+		_quitButton.addActionListener((e) -> ViewUtils.quit(this));
+		_toolBar.add(_quitButton, 6);
 		
 		
 		
@@ -134,7 +209,8 @@ class ControlPanel extends JPanel {
 		} catch (Exception e) {
 		 // TODO pass the corresponding error message to
 		 // ViewUtils.showErrorMsg
-			ViewUtils.showErrorMsg(""); //we need to add viewUtil and the rest of the new classes
+			e.printStackTrace(System.out);
+			ViewUtils.showErrorMsg(e.getMessage()); //we need to add viewUtil and the rest of the new classes
 		 // TODO enable all the buttons
 			setButtons(true);
 			_stopped = true;

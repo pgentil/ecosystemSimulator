@@ -1,7 +1,7 @@
 package simulator.view;
 
 import java.awt.BorderLayout;
-import java.lang.ModuleLayer.Controller;
+import simulator.control.Controller;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 public class MainWindow extends JFrame {
 	
 	private Controller _ctrl;
+	private JPanel _control_panel;
 	public MainWindow(Controller ctrl) {
 		super("[ECOSYSTEM SIMULATOR]");
 		_ctrl = ctrl;
@@ -20,7 +21,8 @@ public class MainWindow extends JFrame {
 		setContentPane(mainPanel);
 		//TODO create ControlPanel and add it in the PAGE_START section of mainPanel
 		//TODO create StatusBar and add it in the PAGE_END section of mainPanel
-
+		_control_panel = new ControlPanel(_ctrl);
+		mainPanel.add(_control_panel, BorderLayout.PAGE_START);
 		//Definition of the tables panel (use a vertical BoxLayout)
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
