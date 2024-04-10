@@ -157,14 +157,9 @@ class ControlPanel extends JPanel {
 		_runButton.setIcon(new ImageIcon("resources/icons/run.png"));
 		_runButton.addActionListener((e) -> 
 		{
-			// (1) disable all the buttons except the stop button ( ) and change the value of the attribute _stopped to false
 			setButtonsExceptStop(false);
-			_stopped = false;
-			//(2) get the delta-time value from the corresponding JTextField
-			
-			
-			//(3) call the run_sim method with the value of steps specified in the corresponding JSpinner:
-			run_sim(stepVlue,_deltaFieldVlue); //idk how to get the values from the Jspinner
+			_stopped = false;			
+			run_sim(stepVlue,_deltaFieldVlue); 
 		});
 		_toolBar.add(_runButton, 3);
 
@@ -178,10 +173,6 @@ class ControlPanel extends JPanel {
 			_stopped = true;
 			});
 		_toolBar.add(_stopButton);
-		
-		
-		
-
 		
 		// Quit Button
 		_toolBar.add(Box.createGlue()); // this aligns the button to the right
