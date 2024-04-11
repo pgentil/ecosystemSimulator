@@ -25,7 +25,7 @@ import org.json.JSONTokener;
 
 class ControlPanel extends JPanel {
 	private Controller _ctrl;
-//	private ChangeRegionsDialog _changeRegionsDialog;
+	private ChangeRegionsDialog _changeRegionsDialog;
 	private JToolBar _toolBar;
 	private JFileChooser _fc;
 	private boolean _stopped = true; // used in the run/stop buttons
@@ -68,6 +68,8 @@ class ControlPanel extends JPanel {
 		// + "/resources/examples"));
 		_fc = new JFileChooser();
 		_fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/resources/examples"));
+		
+		_changeRegionsDialog = new ChangeRegionsDialog(_ctrl);
 		
 		//Open Button
 		_toolBar.add(Box.createGlue()); 
@@ -117,8 +119,7 @@ class ControlPanel extends JPanel {
 		_regionsButton.setToolTipText("Regions");
 		_regionsButton.setIcon(new ImageIcon("resources/icons/regions.png"));
 		_toolBar.add(_regionsButton, 2);
-
-//		_regionsButton.addActionListener((e) ->  _changeRegionsDialog.open(ViewUtils.getWindow(this)));
+		_regionsButton.addActionListener((e) ->  _changeRegionsDialog.open(ViewUtils.getWindow(this)));
 		
 		_steps = new JSpinner();
 		_deltaField = new JTextField();
@@ -187,8 +188,7 @@ class ControlPanel extends JPanel {
 		
 		
 		
-		// TODO Initialise _changeRegionsDialog with an instance of the
-		// change-regions dialog.
+		
 	}
 	// TODO The rest of the methods go here...
 	
