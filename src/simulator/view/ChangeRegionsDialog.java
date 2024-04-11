@@ -78,7 +78,12 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		JTextArea textArea = new JTextArea("Select a region type, the rows/cols "
 				+ "interval, and provide values for the parameters in the <b>value column</b>"
 				+ "(default values are used for parameters with no value)");
-		textArea.setPreferredSize(new Dimension(300, 100));
+		textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setEditable(false);
+        textArea.setSize(550, 50);;
+
+
 		helpPanel.add(textArea);
 		
 		
