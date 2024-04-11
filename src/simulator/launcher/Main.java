@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -244,8 +246,7 @@ public class Main {
 				_animal_factory, _region_factory);
 		Controller controller = new Controller(sim);
 		controller.load_data(joFromFile);
-		MainWindow mw = new MainWindow(controller);
-		controller.run(_time, _delta_time, _sv, out);
+		SwingUtilities.invokeAndWait(() -> new MainWindow(controller));
 		is.close();
 //		throw new UnsupportedOperationException("GUI mode is not ready yet ..."); 	TODO
 	}
