@@ -29,5 +29,4 @@ public class InfoTable extends JPanel {
 		JScrollPane sp = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane. HORIZONTAL_SCROLLBAR_NEVER);
 		this.add(sp);
 	}
-
 }

@@ -1,3 +1,4 @@
+
 package simulator.view;
 
 import java.awt.Dimension;
@@ -19,12 +20,12 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 	
 	private Controller _ctrl;
 	private JPanel _statusBar;
-	int _totalAnimals;
-	double _time;
-	int _height;
-	int _width;
-	int _cols;
-	int _rows;
+	int _totalAnimals = 0;
+	double _time = 0;
+	int _height = 0;
+	int _width = 0;
+	int _cols = 0;
+	int _rows = 0;
 	
 	JLabel timeL = new JLabel();
 	JLabel animalL = new JLabel();
@@ -53,7 +54,7 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 		 
 		 this.add(s);
 		 
-		 JLabel dimensionL = new JLabel("Dimension: " + _height + "x" + _width + " " + _cols + "x" + _rows); //assuming its heightxwidth colsxrows
+		 JLabel dimensionL = new JLabel("Dimension: " + _width + "x" + _height + " " + _cols + "x" + _rows); 
 		 this.add(dimensionL);
 		}
 
@@ -69,7 +70,7 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 		
 		timeL.setText("Time: " +  _time);
 		animalL.setText("Total Animals: " + _totalAnimals);
-		dimensionL.setText("Dimension: " + _height + "x" + _width + " " + _cols + "x" + _rows);
+		dimensionL.setText("Dimension: " + _width + "x" + _height + " " + _cols + "x" + _rows);
 	}
 	
 	
@@ -97,7 +98,8 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
 		_height = map.get_height();
 		_width = map.get_width();
-		dimensionL.setText("Dimension: " + _height + "x" + _width + " " + col + "x" + row);
+		dimensionL.setText("Dimension: " + _width + "x" + _height + " " + _cols + "x" + _rows);
+
 
 	}
 
