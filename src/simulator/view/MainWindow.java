@@ -29,7 +29,6 @@ public class MainWindow extends JFrame {
 		_control_panel = new ControlPanel(_ctrl);
 		mainPanel.add(_control_panel, BorderLayout.PAGE_START);
 		_statusBar = new StatusBar(_ctrl);
-		
 		mainPanel.add(_statusBar, BorderLayout.PAGE_END);
 		//Definition of the tables panel (use a vertical BoxLayout)
 		JPanel contentPanel = new JPanel();

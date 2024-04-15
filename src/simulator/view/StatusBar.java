@@ -44,17 +44,17 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 		 JSeparator s = new JSeparator(JSeparator.VERTICAL);
 		 s.setPreferredSize(new Dimension(10, 20));
 		 
-		 JLabel timeL = new JLabel("Time: " +  _time);
+		 timeL = new JLabel("Time: " +  _time);
 		 this.add(timeL);
 		 
 		 this.add(s);
 		 
-		 JLabel animalL = new JLabel("Total Animals: " + _totalAnimals);
+		 animalL = new JLabel("Total Animals: " + _totalAnimals);
 		 this.add(animalL);
 		 
 		 this.add(s);
 		 
-		 JLabel dimensionL = new JLabel("Dimension: " + _width + "x" + _height + " " + _cols + "x" + _rows); 
+		 dimensionL = new JLabel("Dimension: " + _width + "x" + _height + " " + _cols + "x" + _rows); 
 		 this.add(dimensionL);
 		}
 
@@ -68,7 +68,8 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 		_cols = map.get_cols(); //idk if these are the cols and rows that they ask me
 		_rows = map.get_rows();
 		
-		timeL.setText("Time: " +  _time);
+		String formattedTime = String.format("%.2f", _time);
+	    timeL.setText("Time: " +  formattedTime);
 		animalL.setText("Total Animals: " + _totalAnimals);
 		dimensionL.setText("Dimension: " + _width + "x" + _height + " " + _cols + "x" + _rows);
 	}

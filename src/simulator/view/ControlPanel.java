@@ -51,24 +51,8 @@ class ControlPanel extends JPanel {
 		setLayout(new BorderLayout());
 		_toolBar = new JToolBar();
 		add(_toolBar, BorderLayout.PAGE_START);
-		
-		
-		
-		
-		// TODO create the different buttons/attributes and add them to the toolbar.
-		// Each of them should have a corresponding tooltip. You may use
-		// _toolBar.addSeparator() to add the vertical-line separator between
-		// those components that need it.
-		
-		
-		
-		// TODO Initialise _fc with a JfileChooser instance. In order for it
-		// to open in the examples directory, you can use the following code:
-		// _fc.setCurrentDirectory(new File(System.getProperty("user.dir")
-		// + "/resources/examples"));
 		_fc = new JFileChooser();
 		_fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/resources/examples"));
-		
 		_changeRegionsDialog = new ChangeRegionsDialog(_ctrl);
 		
 		//Open Button
@@ -97,11 +81,6 @@ class ControlPanel extends JPanel {
 			} //TODO else
 		});
 		_toolBar.add(_openButton, 0);
-
-		//wtf: 
-		//(2) when the user has selected a file, load it
-		//and parse the file contents into a JSONObject, reset the simulator using _ctrl.reset(...) with
-		//the corresponding parameters, and load the JSONObject created using _ctrl.load_data(...).
 		
 		//viewer Button
 		_toolBar.add(Box.createGlue()); 
@@ -110,8 +89,11 @@ class ControlPanel extends JPanel {
 		_viewerButton.setToolTipText("View");
 		_viewerButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
 		_toolBar.add(_viewerButton, 1);
-
- 		//_viewerButton.addActionListener((e) -> MapWindow _mapWindow = new MapWindow()); //MapWindow(Frame parent, Controller ctrl)
+		
+//		_viewerButton.addActionListener((e) -> {
+//		    MapWindow _mapWindow = new MapWindow(this, _ctrl);
+//		});		
+		
 		
 		//regions Button
 		_toolBar.add(Box.createGlue()); 
@@ -121,6 +103,8 @@ class ControlPanel extends JPanel {
 		_toolBar.add(_regionsButton, 2);
 		_regionsButton.addActionListener((e) ->  _changeRegionsDialog.open(ViewUtils.getWindow(this)));
 		
+		
+		
 		_steps = new JSpinner();
 		_deltaField = new JTextField();
 		
@@ -128,27 +112,15 @@ class ControlPanel extends JPanel {
 		_toolBar.addSeparator();
 		_steps.setPreferredSize(new Dimension(90, 1));
 		JLabel stepsLabel = new JLabel("Steps: ");
-		_toolBar.add(stepsLabel);
-		_toolBar.add(_steps, 4);
-		
-		int stepVlue = (int)_steps.getValue(); //buff idk
-		
+		_toolBar.add(stepsLabel,5);
+		_toolBar.add(_steps, 6);
 		
 		_toolBar.add(Box.createGlue()); 
 		_toolBar.addSeparator();
 		_deltaField.setPreferredSize(new Dimension(70, 1));
 		JLabel dTLabel = new JLabel(" Delta-Time: ");
-		_toolBar.add(dTLabel);
-		_toolBar.add(_deltaField, 5);
-		final double _deltaFieldVlue;
-		String value = _deltaField.getText();
-		
-		if (!value.equals(""))
-			_deltaFieldVlue = Integer.parseInt(_deltaField.getText());  //buff idk
-		else {
-			_deltaFieldVlue = 0;
-		}
-		
+		_toolBar.add(dTLabel,7);
+		_toolBar.add(_deltaField, 8);
 		
 		//run button
 		_toolBar.add(Box.createGlue()); 
@@ -158,6 +130,14 @@ class ControlPanel extends JPanel {
 		_runButton.setIcon(new ImageIcon("resources/icons/run.png"));
 		_runButton.addActionListener((e) -> 
 		{
+			int stepVlue = (int)_steps.getValue(); //buff idk
+			double _deltaFieldVlue;
+			String value = _deltaField.getText();
+			if (!value.equals(""))
+				_deltaFieldVlue = Double.parseDouble(_deltaField.getText());  //buff idk
+			else {
+				_deltaFieldVlue = 0;
+			}
 			setButtonsExceptStop(false);
 			_stopped = false;			
 			run_sim(stepVlue,_deltaFieldVlue); 
@@ -173,7 +153,7 @@ class ControlPanel extends JPanel {
 		_stopButton.addActionListener((e) -> {
 			_stopped = true;
 			});
-		_toolBar.add(_stopButton);
+		_toolBar.add(_stopButton, 4);
 		
 		// Quit Button
 		_toolBar.add(Box.createGlue()); // this aligns the button to the right
@@ -182,13 +162,7 @@ class ControlPanel extends JPanel {
 		_quitButton.setToolTipText("Quit");
 		_quitButton.setIcon(new ImageIcon("resources/icons/exit.png"));
 		_quitButton.addActionListener((e) -> ViewUtils.quit(this));
-		_toolBar.add(_quitButton, 6);
-		
-		
-		
-		
-		
-		
+		_toolBar.add(_quitButton);
 	}
 	// TODO The rest of the methods go here...
 	

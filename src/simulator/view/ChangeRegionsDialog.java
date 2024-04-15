@@ -20,6 +20,7 @@ import simulator.model.animals.AnimalInfo;
 import simulator.model.regions.MapInfo;
 import simulator.model.regions.RegionInfo;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import javax.swing.JPanel;
@@ -42,7 +43,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 	private String[] _headers = { "Key", "Value", "Description" };
 	int _status; //idkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
 	
-	// TODO if necessary, add attributes here…
+	// TODO if necessary, add attributes hereï¿½
 	
 	ChangeRegionsDialog(Controller ctrl) {
 		 super((Frame)null, true);
@@ -59,6 +60,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		// dialog and add them to the main panel, e.g. one for the help text,
 		// one for the table, one for the combobox and one for the buttons.
 		JPanel helpPanel = new JPanel();
+		helpPanel.setLayout(new BorderLayout());
 		mainPanel.add(helpPanel);
 		
 		JPanel tablePanel = new JPanel();
@@ -76,7 +78,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		// section).
 		
 		JTextArea textArea = new JTextArea("Select a region type, the rows/cols "
-				+ "interval, and provide values for the parameters in the <b>value column</b>"
+				+ "interval, and provide values for the parameters in the value column"
 				+ "(default values are used for parameters with no value)");
 		textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
@@ -107,7 +109,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		_regionsModel = new DefaultComboBoxModel<>();
 		
 		// TODO add the description of all the regions to _regionsModel, using
-		// the key “desc” or “type” of the JSONObject in _regionsInfo, since
+		// the key ï¿½descï¿½ or ï¿½typeï¿½ of the JSONObject in _regionsInfo, since
 		// these give us information about what the factory can create.
 		
 		for(JSONObject rI: _regionsInfo)
@@ -166,7 +168,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		    });		
 		
 		
-		setPreferredSize(new Dimension(700, 400)); // puedes usar otro tamaño
+		setPreferredSize(new Dimension(700, 400)); // puedes usar otro tamaï¿½o
 		pack();
 		setResizable(false);
 		setVisible(false);
