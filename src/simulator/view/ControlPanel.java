@@ -2,6 +2,7 @@ package simulator.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,7 +24,7 @@ import javax.swing.SwingUtilities;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-class ControlPanel extends JPanel {
+class ControlPanel extends JPanel{
 	private Controller _ctrl;
 	private ChangeRegionsDialog _changeRegionsDialog;
 	private JToolBar _toolBar;
@@ -48,6 +49,8 @@ class ControlPanel extends JPanel {
 	}
 	
 	private void initGUI() {
+		JPanel auxPanel;
+		
 		setLayout(new BorderLayout());
 		_toolBar = new JToolBar();
 		add(_toolBar, BorderLayout.PAGE_START);
@@ -91,7 +94,7 @@ class ControlPanel extends JPanel {
 		_toolBar.add(_viewerButton, 1);
 		
 //		_viewerButton.addActionListener((e) -> {
-//		    MapWindow _mapWindow = new MapWindow(this, _ctrl);
+//		    MapWindow _mapWindow = new MapWindow(new Frame(), _ctrl);
 //		});		
 		
 		
@@ -110,17 +113,25 @@ class ControlPanel extends JPanel {
 		
 		_toolBar.add(Box.createGlue()); 
 		_toolBar.addSeparator();
-		_steps.setPreferredSize(new Dimension(90, 1));
+		auxPanel = new JPanel();
+		auxPanel.add(_steps);
+		auxPanel.setOpaque(false);
+		_steps.setValue(10000);
+		_steps.setPreferredSize(new Dimension(90, 30)); //(new Dimension(90, 50));
 		JLabel stepsLabel = new JLabel("Steps: ");
 		_toolBar.add(stepsLabel,5);
-		_toolBar.add(_steps, 6);
+		_toolBar.add(auxPanel, 6);
 		
 		_toolBar.add(Box.createGlue()); 
 		_toolBar.addSeparator();
-		_deltaField.setPreferredSize(new Dimension(70, 1));
+		auxPanel = new JPanel();
+		auxPanel.add(_deltaField);
+		auxPanel.setOpaque(false);
+		_deltaField.setPreferredSize(new Dimension(90, 30));
+		_deltaField.setText("0.03");
 		JLabel dTLabel = new JLabel(" Delta-Time: ");
 		_toolBar.add(dTLabel,7);
-		_toolBar.add(_deltaField, 8);
+		_toolBar.add(auxPanel, 8);
 		
 		//run button
 		_toolBar.add(Box.createGlue()); 
