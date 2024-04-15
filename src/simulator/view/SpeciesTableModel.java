@@ -56,7 +56,7 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 		 for (int i = 0; i < _rows; i++ )
 			 for(int ii = 0; ii < _cols; ii++)
 				 if (ii > 0) {
-					 myArray[i][ii] = 1;
+					 myArray[i][ii] = 0;
 				 } else {
 					 myArray[i][ii] = null;
 				 }
@@ -78,7 +78,7 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 			 //myArray[rowIndex.get(geneticCode)][colIndex.get(a.get_state())] = value;
 			 
 		 }
-				 
+		fireTableDataChanged();
 		 
 	 }
 	
@@ -135,5 +135,11 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 	public String getColumnName(int col) {
 		initColumnNames();
 		return columnName[col]; }
+	
+	@Override
+	public void setValueAt(Object value, int rowIndex, int columnIndex) {
+	    myArray[rowIndex][columnIndex] = value;
+	    fireTableCellUpdated(rowIndex, columnIndex);
+	}
 
 }
