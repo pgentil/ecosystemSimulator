@@ -13,10 +13,10 @@ import simulator.model.regions.MapInfo;
 import simulator.model.regions.RegionInfo;
 
 public class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver{
-	static final int NUMBER_OF_SPECIES = 2;
+	static final int NUMBER_OF_ROWS = 10;
 	// TODO define the necessary attributes
 	Controller _ctrl;
-	int _rows = NUMBER_OF_SPECIES; 
+	int _rows = NUMBER_OF_ROWS; 
 	int _cols = State.values().length + 1;
 	
 	String[] columnName;
