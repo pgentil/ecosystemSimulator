@@ -14,6 +14,7 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -93,9 +94,14 @@ class ControlPanel extends JPanel{
 		_viewerButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
 		_toolBar.add(_viewerButton, 1);
 		
-//		_viewerButton.addActionListener((e) -> {
-//		    MapWindow _mapWindow = new MapWindow(new Frame(), _ctrl);
-//		});		
+		
+		
+		_viewerButton.addActionListener((e) -> {
+			JFrame frame = new JFrame();
+			frame.pack();
+			frame.setVisible(true);
+		    MapWindow _mapWindow = new MapWindow(frame, _ctrl);
+		});		
 		
 		
 		//regions Button

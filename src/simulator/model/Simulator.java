@@ -30,6 +30,7 @@ public class Simulator implements Observable<EcoSysObserver>{
 			 Factory<Animal> animals_factory, Factory<Region> regions_factory) 
 	 {
 		 init(cols, rows, width, height);
+		 this._observerList = new HashSet<EcoSysObserver>();
 		 this._animal_factory = animals_factory;
 		 this._region_factory = regions_factory;
 		 
@@ -39,7 +40,7 @@ public class Simulator implements Observable<EcoSysObserver>{
 		 this._time = 0;
 		 this._manager = new RegionManager(cols, rows, width, height);
 		 this._animalList = new ArrayList<Animal>();
-		 this._observerList = new HashSet<EcoSysObserver>();
+		 
 	 }
 	 
 	 private void set_region(int row, int col, Region r) {
