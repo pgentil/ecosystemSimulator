@@ -1,30 +1,26 @@
 package simulator.factories;
 
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import simulator.launcher.Main;
 import simulator.misc.Utils;
 import simulator.misc.Vector2D;
 import simulator.model.animals.Animal;
 import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.SelectionStrategy;
-import simulator.model.animals.Sheep;
+import simulator.model.animals.Saca;
 
-import simulator.launcher.Main;
+public class SacaBuilder extends Builder<Animal> {
 
-public class SheepBuilder extends Builder<Animal> {
-	
-
-	
-	public SheepBuilder()  {
+public SacaBuilder()  {
 		
-		super("sheep", "Sheep");
+		super("saca", "Saca");
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected Sheep create_instance(JSONObject data) {
+	protected Saca create_instance(JSONObject data) {
 		fill_in_data(data);
 		
 		Vector2D pos = null;
@@ -47,14 +43,14 @@ public class SheepBuilder extends Builder<Animal> {
 		
 		Factory<SelectionStrategy> selection_strategy_factory = Main.getStrategyFactory();
 		
-		Sheep sheep = null;
+		Saca saca = null;
 		try {
-			sheep = new Sheep(selection_strategy_factory.create_instance(mateStrat), selection_strategy_factory.create_instance(dangerStrat), pos);
+			saca = new Saca(selection_strategy_factory.create_instance(mateStrat), selection_strategy_factory.create_instance(dangerStrat), pos);
 		} catch (IncorrectParametersException e) {
 			assert(1 == 0); //unreachable statement as we know that the constructor in this case will never throw an exception
 		}
 		
-		return sheep;
+		return saca;
 	}
 	@Override
 	protected void fill_in_data(JSONObject o) {
@@ -68,7 +64,5 @@ public class SheepBuilder extends Builder<Animal> {
 			o.put("danger_strategy", f.get_info());
 		}
 	}
-	
+
 }
-
-

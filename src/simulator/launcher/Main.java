@@ -204,6 +204,7 @@ public class Main {
 		List<Builder<Animal>> animal_builders = new ArrayList<Builder<Animal>>();
 		animal_builders.add(new SheepBuilder());
 		animal_builders.add(new WolfBuilder());
+		animal_builders.add(new SacaBuilder());
 		_animal_factory = new BuilderBasedFactory<Animal>(animal_builders);
 		
 		List<Builder<Region>> region_builders = new ArrayList<Builder<Region>>();
