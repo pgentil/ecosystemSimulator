@@ -56,9 +56,8 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 			 for(int ii = 0; ii < _cols; ii++)
 				 if (ii > 0) {
 					 myArray[i][ii] = 0;
-				 } else if (myArray[i][ii] == null){
-					 myArray[i][ii] = null;
 				 }
+		 //rowIndex.clear();
 	 }
 	 
 	 void updateArray(List<AnimalInfo> animals)
