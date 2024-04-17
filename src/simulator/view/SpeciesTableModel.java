@@ -74,7 +74,7 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 			 ++value;
 			 setValueAt(value, rowIndex.get(geneticCode), colIndex.get(a.get_state()));
 			 //myArray[rowIndex.get(geneticCode)][colIndex.get(a.get_state())] = value
-		 }
+		}
 		fireTableDataChanged();
 		 
 	 }
