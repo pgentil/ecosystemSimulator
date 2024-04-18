@@ -14,11 +14,11 @@ import simulator.model.regions.MapInfo;
 import simulator.model.regions.RegionInfo;
 
 public class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver{
-	static final int NUMBER_OF_ROWS = 10;
 	// TODO define the necessary attributes
-	Controller _ctrl;
-	int _rows = NUMBER_OF_ROWS; 
+	final static int COL_INDEX_FOR_GENETIC_CODE = 0;
+	Controller _ctrl; 
 	int _cols = State.values().length + 1;
+	
 	
 	String[] columnName;
 	
@@ -27,7 +27,7 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 	Map<String, Map<State, Integer>> info;
 	HashMap<State, Integer> colIndex; //maps state value to the corresponding column
 	
-	Object[][] myArray = new Object[_rows][_cols];
+	Object[][] myArray;
 	
 	 SpeciesTableModel(Controller ctrl) {
 		 colIndex = new HashMap<State, Integer>();
@@ -41,8 +41,8 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 	 
 	 private void initColumnNames() {
 		 columnName = new String[_cols];
-		 columnName[0] = "Species";
-		 int i = 1;
+		 columnName[COL_INDEX_FOR_GENETIC_CODE] = "Species";
+		 int i = COL_INDEX_FOR_GENETIC_CODE + 1;
 		 for (State s: State.values()) {
 			 colIndex.put(s, i);
 			 columnName[i] = s.name();
