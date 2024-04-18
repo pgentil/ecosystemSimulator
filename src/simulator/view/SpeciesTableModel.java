@@ -1,6 +1,7 @@
 package simulator.view;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -23,14 +24,14 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 	
 	int nextIndex = 0;
 	
-	HashMap<String, Integer> rowIndex; //maps genetic code to index in table
+	Map<String, Map<State, Integer>> info;
 	HashMap<State, Integer> colIndex; //maps state value to the corresponding column
 	
 	Object[][] myArray = new Object[_rows][_cols];
 	
 	 SpeciesTableModel(Controller ctrl) {
-		 rowIndex = new HashMap<String, Integer>();
 		 colIndex = new HashMap<State, Integer>();
+		 info = new HashMap<String, Map<State, Integer>>();
 		 initColumnNames();
 		 _ctrl = ctrl;
 		 _ctrl.addObserver(this);
@@ -50,29 +51,43 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 	 }
 	 // TODO the rest of the methods go here...
 	 
-	 void initArray()
+	 private void initInfo()
 	 {
-		 for (int i = 0; i < _rows; i++ )
-			 for(int ii = 0; ii < _cols; ii++)
-				 if (ii > 0) {
-					 myArray[i][ii] = 0;
-				 }
-		 //rowIndex.clear();
+		 
+		 info.clear();
+	 }
+	 
+	 private void initAray() {
+		 myArray = new Object[info.size()][_cols];
+		 int i = 0;
+		 for (String g: info.keySet()) {
+			 myArray[i][0] = g;
+			 for (State state: State.values()) {
+				 Map<State, Integer> stateToValue = info.get(g);
+				 int value = (stateToValue.containsKey(state) ? stateToValue.get(state) : 0);
+				 myArray[i][colIndex.get(state)] = value;
+			 }
+			 ++i;
+		 }
 	 }
 	 
 	 void updateArray(List<AnimalInfo> animals)
 	 {
-		 initArray();
+		 initInfo();
 		 for (AnimalInfo a: animals) {
 			 String geneticCode = a.get_genetic_code();
-			 if (!rowIndex.containsKey(geneticCode)) {
-				 rowIndex.put(geneticCode, nextIndex);
-				 myArray[nextIndex][0] = geneticCode;
-				 ++nextIndex;
+			 if (!info.containsKey(geneticCode)) {
+				 info.put(geneticCode, new HashMap<State, Integer>());
 			 }
-			 int value = (Integer)myArray[rowIndex.get(geneticCode)][colIndex.get(a.get_state())];
+			 Map<State, Integer> stateToValue = info.get(geneticCode);
+			 if (!stateToValue.containsKey(a.get_state())) {
+				 stateToValue.put(a.get_state(), 0);
+			 }
+			 int value = stateToValue.get(a.get_state());
 			 ++value;
-			 setValueAt(value, rowIndex.get(geneticCode), colIndex.get(a.get_state()));
+			 stateToValue.replace(a.get_state(), value);
+			 
+			 initAray();
 			 //myArray[rowIndex.get(geneticCode)][colIndex.get(a.get_state())] = value
 		}
 		fireTableDataChanged();
@@ -92,13 +107,7 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-		 String geneticCode = a.get_genetic_code();
-		 if (!rowIndex.containsKey(geneticCode)) {
-			 rowIndex.put(geneticCode, nextIndex);
-		 }
-		 int value = (Integer)myArray[rowIndex.get(geneticCode)][colIndex.get(a.get_state())];
-		 ++value;
-		 myArray[rowIndex.get(geneticCode)][colIndex.get(a.get_state())] = value;
+		updateArray(animals);
 	}
 
 	@Override
@@ -121,7 +130,7 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 
 	@Override
 	public int getRowCount() {
-		return rowIndex.size();
+		return info.size();
 	}
 
 	@Override
