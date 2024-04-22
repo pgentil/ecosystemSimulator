@@ -35,7 +35,6 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 		 initColumnNames();
 		 _ctrl = ctrl;
 		 _ctrl.addObserver(this);
-		 columnName = new String[_cols];
 	 // TODO initialise the corresponding data structures
 	 }
 	 
@@ -138,9 +137,11 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 		return State.values().length + 1;
 	}
 	
+	@Override
 	public String getColumnName(int col) {
 		initColumnNames();
-		return columnName[col]; }
+		return columnName[col];
+	}
 	
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {

@@ -34,20 +34,18 @@ public class MainWindow extends JFrame {
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
-		//TODO create the species table and add it to the contentPanel.
+		//SPECIES TABLE
 		InfoTable speciesTable = new InfoTable("Species", new SpeciesTableModel(_ctrl));
-		
 		speciesTable.setPreferredSize(new Dimension(500, 250));
-		mainPanel.add(speciesTable);
+		contentPanel.add(speciesTable);
+		//REGIONS TABLE
 		InfoTable regionsTable = new InfoTable("Regions", new RegionsTableModel(_ctrl));
 		regionsTable.setPreferredSize(new Dimension(500, 250));
-		mainPanel.add(regionsTable);
-		
-		//Use setPreferredSize(new Dimension(500, 250)) to fix its size
-		//TODO create the regions table.
-		//Use setPreferredSize(new Dimension(500, 250)) to fix its size
+		regionsTable.setLocation(speciesTable.getX() , speciesTable.getY() + 525);
+		contentPanel.add(regionsTable);
+//		
 		//TODO call ViewUtils.quit(MainWindow.this) in the windowClosing method
-//		addWindowListener(  ); TODO
+//		addWindowListener( WindowListe ); TODO
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		pack();
 		setVisible(true);

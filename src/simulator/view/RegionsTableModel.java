@@ -36,7 +36,8 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 		rowIndex = new HashMap<String, Integer>();
 		colIndex = new HashMap<Diet, Integer>();
 		initColumnNames();
-		ctrl.addObserver(this);
+		_ctrl = ctrl;
+		_ctrl.addObserver(this);
 	}
 	
 	private void initColumnNames() {
@@ -105,8 +106,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return myArray[rowIndex][columnIndex];
 	}
 
 	@Override
@@ -123,8 +123,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-		// TODO Auto-generated method stub
-		
+		updateArray(map);
 	}
 
 	@Override
@@ -135,8 +134,20 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 
 	@Override
 	public void onAvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
-		// TODO Auto-generated method stub
+		updateArray(map);
 		
+	}
+	
+	@Override
+	public String getColumnName(int col) {
+		initColumnNames();
+		return columnName[col];
+	}
+	
+	@Override
+	public void setValueAt(Object value, int rowIndex, int columnIndex) {
+	    myArray[rowIndex][columnIndex] = value;
+	    fireTableCellUpdated(rowIndex, columnIndex);
 	}
 
 }
