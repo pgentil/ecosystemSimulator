@@ -99,7 +99,6 @@ class ControlPanel extends JPanel{
 		_viewerButton.addActionListener((e) -> {
 			JFrame frame = new JFrame();
 			frame.pack();
-			frame.setVisible(true);
 		    MapWindow _mapWindow = new MapWindow(frame, _ctrl);
 		});		
 		
