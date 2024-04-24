@@ -52,6 +52,22 @@ public class MapViewer extends AbstractMapViewer {
 			_count = 0;
 			_color = color;
 		}
+		
+		public void incrementCount() {
+			++_count;
+		}
+		
+		public void resetCount() {
+			_count = 0;
+		}
+		
+		public int getCount() {
+			return _count;
+		}
+		
+		public Color getColor() {
+			return _color;
+		}
 	}
 
 	// Un mapa para la información sobre las especies
@@ -86,8 +102,6 @@ public class MapViewer extends AbstractMapViewer {
 						_currState = null;
 						indexState = 0;
 					}
-					// TODO Cambiar _currState al siguiente (de manera circular). Después de null
-					// viene el primero de Animal.State.values() y después del último viene null.
 					repaint();
 				default:
 				}
@@ -137,9 +151,6 @@ public class MapViewer extends AbstractMapViewer {
 			gr.setColor(auxColor);
 			
 		}
-		// TODO Mostrar el texto de ayuda si _showHelp es true. El texto a mostrar es el
-		// siguiente (en 2 líneas):
-		//
 		// h: toggle help
 		// s: show animals of a specific state
 
@@ -158,19 +169,13 @@ public class MapViewer extends AbstractMapViewer {
 		for (int i = 0; i < _rows; ++i) {
 			for (int j = 0; j < _cols; ++j) {
 				drawCell(i, j, g);
-//				g.drawRect(
-//						(int)Math.round(i *_rwidth) ,
-//						(int)Math.round(j *_rheight) ,
-//						(int)Math.round(i *_rwidth + _rwidth),
-//						(int)Math.round(j *_rheight + _rheight)
-//						);
 			}
 		}
 
 		// Dibujar los animales
 		for (String kind : _kindsInfo.keySet()) {
-			SpeciesInfo aux = _kindsInfo.get(kind);
-			aux._count = 0;
+			SpeciesInfo auxSpeciesInfo = _kindsInfo.get(kind);
+			auxSpeciesInfo.resetCount();
 		}
 		for (AnimalInfo a : animals) {
 
@@ -184,24 +189,14 @@ public class MapViewer extends AbstractMapViewer {
 				esp_info = new SpeciesInfo(ViewUtils.get_color(a.get_genetic_code()));
 				_kindsInfo.put(a.get_genetic_code(), esp_info);
 			}
-			++esp_info._count;
-			
-			// TODO Si esp_info es null, añade una entrada correspondiente al mapa. Para el
-			// color usa ViewUtils.get_color(a.get_genetic_code())
-
-			// TODO Incrementar el contador de la especie (es decir el contador dentro de
-			// tag_info)
+			esp_info.incrementCount();
 			Vector2D aux = a.get_position();
 			int x = (int) Math.round(aux.getX());
 			int y = (int) Math.round(aux.getY());
 			int size = (int) Math.round(a.get_age() / 2 + 2);
 			
-			g.setColor(esp_info._color);
+			g.setColor(esp_info.getColor());
 			g.fillRect(x, y, size, size);
-			
-			// TODO Dibijar el animal en la posicion correspondiente, usando el color
-			// tag_info._color. Su tamaño tiene que ser relativo a su edad, por ejemplo
-			// edad/2+2. Se puede dibujar usando fillRoundRect, fillRect o fillOval.
 
 		}
 		

@@ -78,7 +78,7 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 			
 			RegionInfo ri = r.r();
 			myArray[nextIndex][COL_INDEX_OF_REGION_DESCRIPTION] = ri.toString();
-			rowIndex.put(r.toString(), nextIndex);
+			rowIndex.put(r.toString(), nextIndex); //Using RegionData toString()
 			++nextIndex;
 			int r_idx = rowIndex.get(r.toString());
 			myArray[r_idx][COL_INDEX_OF_ROWS] = r.row();
