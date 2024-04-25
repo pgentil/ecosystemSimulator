@@ -86,7 +86,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		_dataTableModel = new DefaultTableModel() {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return column == 1 && cellEditable;
+				return column == 1;
 			}
 			
 			
