@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import simulator.model.Entity;
 import simulator.model.animals.Animal;
+import simulator.model.animals.AnimalInfo;
 import simulator.model.animals.Diet;
 
 public abstract class Region implements Entity, FoodSupplier, RegionInfo{
@@ -58,6 +59,11 @@ public abstract class Region implements Entity, FoodSupplier, RegionInfo{
 		obj.put("animals", ja);
 		 
 		return obj;
+	}
+	
+	@Override
+	public List<AnimalInfo> getAnimalsInfo() {
+		return Collections.unmodifiableList(animalList); 
 	}
 		
 }

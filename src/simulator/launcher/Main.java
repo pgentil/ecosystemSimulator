@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -25,6 +27,7 @@ import simulator.model.Simulator;
 import simulator.model.animals.Animal;
 import simulator.model.animals.SelectionStrategy;
 import simulator.model.regions.Region;
+import simulator.view.MainWindow;
 
 public class Main {
 
@@ -79,6 +82,7 @@ public class Main {
 		try {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parse_help_option(line, cmdLineOptions);
+			parse_mode_option(line);
 			parse_in_file_option(line);
 			parse_out_file_option(line);
 			parse_time_option(line);
@@ -107,6 +111,8 @@ public class Main {
 	private static Options build_options() {
 		Options cmdLineOptions = new Options();
 
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
+				.desc("Mode of the game.").build());
 		// help
 		cmdLineOptions.addOption(Option.builder("h").longOpt("help")
 				.desc("Print this message.").build());
@@ -169,6 +175,18 @@ public class Main {
 	        }
 	 }
 	 
+	 private static void parse_mode_option(CommandLine line) throws ParseException { //TODO
+	        if (line.hasOption("m")) {
+	        	String mode = line.getOptionValue("m");
+	        	if (mode.equals("gui")) {
+	        		_mode = ExecMode.GUI;
+	        	} else {
+	        		_mode = ExecMode.BATCH;
+	        	}
+	        	
+	        }
+	 }
+	 
 	 private static void parse_sv_option(CommandLine line){
 			if (line.hasOption("sv")) {
 				_sv = true;
@@ -216,7 +234,21 @@ public class Main {
 	}
 
 	private static void start_GUI_mode() throws Exception {
-		throw new UnsupportedOperationException("GUI mode is not ready yet ...");
+		
+		InputStream is = new FileInputStream(new File(_in_file));
+		JSONObject joFromFile = new JSONObject(new JSONTokener(is));
+		OutputStream out = new FileOutputStream(_out_file);
+		assert(joFromFile.has("cols") && joFromFile.has("rows") && joFromFile.has("width") && joFromFile.has("height"));
+		Simulator sim = new Simulator(joFromFile.getInt("cols"),
+				joFromFile.getInt("rows"),
+				joFromFile.getInt("width"),
+				joFromFile.getInt("height"),
+				_animal_factory, _region_factory);
+		Controller controller = new Controller(sim);
+		controller.load_data(joFromFile);
+		SwingUtilities.invokeAndWait(() -> new MainWindow(controller));
+		is.close();
+//		throw new UnsupportedOperationException("GUI mode is not ready yet ..."); 	TODO
 	}
 
 	private static void start(String[] args) throws Exception {
@@ -235,7 +267,20 @@ public class Main {
 	public static Factory<SelectionStrategy> getStrategyFactory(){
 		return _strategy_factory;
 	}
+	
+	public static Factory<Animal> getAnimalFactory(){
+		return _animal_factory;
+	}
+	
+	public static Factory<Region> getRegionFactory(){
+		return _region_factory;
+	}
+	
+	public double getDeltaTime(){
+		return _delta_time;
+	}
 
+	
 	public static void main(String[] args) {
 		Utils._rand.setSeed(2147483647l);
 		try {
@@ -246,5 +291,6 @@ public class Main {
 			e.printStackTrace();
 		}
 	} 
+	
 	
 }

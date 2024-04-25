@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import simulator.model.EcoSysObserver;
 import simulator.model.Simulator;
 import simulator.model.animals.AnimalInfo;
 import simulator.model.regions.MapInfo;
@@ -23,18 +24,7 @@ public class Controller {
 	
 	 public void load_data(JSONObject data) {
 		 if (data.has("regions")) {
-			 //Retrieving regions (optional)
-			 JSONArray jRegions = data.getJSONArray("regions");
-			 for (int i = 0; i < jRegions.length(); ++i) {
-				 JSONObject r_json = jRegions.getJSONObject(i);
-				 JSONArray minMaxCols = r_json.getJSONArray("col"); //range of columns where you want to initialize this type of region
-				 JSONArray minMaxRows = r_json.getJSONArray("row"); //range of rows where you want to initialize this type of region
-				 for (int j = minMaxCols.getInt(0); j <= minMaxCols.getInt(1); ++j) { //iterate over range of columns (int)
-					 for (int k = minMaxRows.getInt(0); k <= minMaxRows.getInt(1); ++k) { //iterate over range of rows (int)
-						 _sim.set_region(k, j, r_json.getJSONObject("spec")); //row, col, specification of region
-					 }
-				 }
-			 }
+			 set_regions(data);
 		 }
 		//Retrieving animals
 		 JSONArray jAnimals = data.getJSONArray("animals");
@@ -43,6 +33,20 @@ public class Controller {
 			 int amount = a_json.getInt("amount"); //amount of specified animal
 			 for (int j = 0; j < amount; ++j){
 				 _sim.add_animal(a_json.getJSONObject("spec"));
+			 }
+		 }
+	 }
+	 
+	 public void set_regions(JSONObject rs) {
+		 JSONArray jRegions = rs.getJSONArray("regions");
+		 for (int i = 0; i < jRegions.length(); ++i) {
+			 JSONObject r_json = jRegions.getJSONObject(i);
+			 JSONArray minMaxCols = r_json.getJSONArray("col"); //range of columns where you want to initialize this type of region
+			 JSONArray minMaxRows = r_json.getJSONArray("row"); //range of rows where you want to initialize this type of region
+			 for (int j = minMaxCols.getInt(0); j <= minMaxCols.getInt(1); ++j) { //iterate over range of columns (int)
+				 for (int k = minMaxRows.getInt(0); k <= minMaxRows.getInt(1); ++k) { //iterate over range of rows (int)
+					 _sim.set_region(k, j, r_json.getJSONObject("spec")); //row, col, specification of region
+				 }
 			 }
 		 }
 	 }
@@ -86,4 +90,20 @@ public class Controller {
 		 
 		 return ol;
 	}
+	 
+	 public void reset(int cols, int rows, int width, int height) {
+		 _sim.reset(cols, rows, width, height);
+	 }
+	 
+	 public void advance(double dt) {
+		 _sim.advance(dt);
+	 }
+	 
+	 public void addObserver(EcoSysObserver o) {
+		 _sim.addObserver(o);
+	 }
+	 
+	 public void removeObserver(EcoSysObserver o) {
+		 _sim.removeObserver(o);
+	 }
 }
