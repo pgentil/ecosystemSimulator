@@ -13,7 +13,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONString;
 
 import simulator.control.Controller;
 import simulator.launcher.Main;
@@ -84,8 +86,10 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		_dataTableModel = new DefaultTableModel() {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return column == 1;
+				return column == 1 && cellEditable;
 			}
+			
+			
 		};
 		_dataTableModel.setColumnIdentifiers(_headers);
 	
@@ -141,14 +145,41 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		JButton okButton = new JButton("OK");
 		buttonPanel.add(okButton);
 		okButton.addActionListener(e -> {
+			JSONObject region_data = new JSONObject();
+			for (int i = 0; i < this._dataTableModel.getRowCount(); ++i) {
+				String value = (String) this._dataTableModel.getValueAt(i, 1);
+				if (value != null) {
+					region_data.put((String) this._dataTableModel.getValueAt(i,  0), value);
+				}
+			}
+			String region_type = _regionsInfo.get(regionsCB.getSelectedIndex()).getString("type");
+			JSONObject region = new JSONObject();
+			JSONArray rowFromTo = new JSONArray();
+			JSONArray colFromTo = new JSONArray();
+			JSONObject spec = new JSONObject();
+			JSONArray regionsArray = new JSONArray();
 			
+			Object row_from = fromRowCB.getSelectedItem();
+			Object row_to = toRowCB.getSelectedItem();
+			Object col_from = fromColCB.getSelectedItem();
+			Object col_to = toColCB.getSelectedItem();
 			
+			rowFromTo.put(row_from);
+			rowFromTo.put(row_to);
+			colFromTo.put(col_from);
+			colFromTo.put(col_to);
+			region.put("row", rowFromTo);
+			region.put("col", colFromTo);
+			spec.put("type", region_type);
+			spec.put("data", region_data);
+			region.put("spec", spec);
 			
-			
-			
-			
-			
-			
+			regionsArray.put(region);
+			JSONObject regions = new JSONObject();
+			regions.put("regions", regionsArray);
+			_ctrl.set_regions(regions);		
+			_status = 0;
+			setVisible(false);
 	    });		
 		
 		
