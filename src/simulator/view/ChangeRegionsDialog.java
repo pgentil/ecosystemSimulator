@@ -150,6 +150,14 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		JPanel buttonPanel = new JPanel();
 		mainPanel.add(buttonPanel);	
 		
+		/*
+		 * OK BUTTON: Gets the region_data from _dataTableModel and stores into a string. Gets region_type 
+		 * from _regionsInfo using the regions combo box selection and stores it into a string. Creates the fields
+		 * necessary for the JSON elements of a region, like the row array, the column array and the specification object.
+		 * Fills the information into these JSON elements and then inserts these JSON elements into a JSONObject. Afterwards,
+		 * it allocates the JSONObject into a JSONArray that will be mapped to the "regions" key. Then it calls the controller
+		 * set_regions, sets the status attribute to 1 and sets the dialog's visibility to false.
+		 * */
 		JButton okButton = new JButton("OK");
 		buttonPanel.add(okButton);
 		okButton.addActionListener(e -> {
@@ -160,7 +168,8 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 					region_data.put((String) this._dataTableModel.getValueAt(i,  0), value);
 				}
 			}
-			String region_type = _regionsInfo.get(regionsCB.getSelectedIndex()).getString("type");
+			JSONObject regionInfo = _regionsInfo.get(regionsCB.getSelectedIndex());
+			String region_type = regionInfo.getString("type");
 			JSONObject region = new JSONObject();
 			JSONArray rowFromTo = new JSONArray();
 			JSONArray colFromTo = new JSONArray();
