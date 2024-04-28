@@ -159,7 +159,9 @@ public class Main {
 		String t = line.getOptionValue("t", _default_time.toString());
 		try {
 			_time = Double.parseDouble(t);
-			assert (_time >= 0);
+			if (_time < 0) {
+				throw new Exception();
+			}
 		} catch (Exception e) {
 			throw new ParseException("Invalid value for time: " + t);
 		}
@@ -235,20 +237,29 @@ public class Main {
 	}
 
 	private static void start_GUI_mode() throws Exception {
-		
-		InputStream is = new FileInputStream(new File(_in_file));
-		JSONObject joFromFile = new JSONObject(new JSONTokener(is));
-		OutputStream out = new FileOutputStream(_out_file);
-		assert(joFromFile.has("cols") && joFromFile.has("rows") && joFromFile.has("width") && joFromFile.has("height"));
-		Simulator sim = new Simulator(joFromFile.getInt("cols"),
-				joFromFile.getInt("rows"),
-				joFromFile.getInt("width"),
-				joFromFile.getInt("height"),
-				_animal_factory, _region_factory);
+		int cols, rows, width, height;
+		JSONObject joFromFile = null;
+		if (_in_file != null) {
+			InputStream is = new FileInputStream(new File(_in_file));
+			joFromFile = new JSONObject(new JSONTokener(is));
+			cols = joFromFile.getInt("cols");
+			rows = joFromFile.getInt("rows");
+			width = joFromFile.getInt("width");
+			height = joFromFile.getInt("height");
+			is.close();
+		} else {
+			cols = 20;
+			rows = 15;
+			width = 800;
+			height = 600;
+		}
+		Simulator sim = new Simulator(cols, rows, width, height,_animal_factory, _region_factory);
 		Controller controller = new Controller(sim);
-		controller.load_data(joFromFile);
+		if (joFromFile != null) {
+			controller.load_data(joFromFile);
+		}
 		SwingUtilities.invokeAndWait(() -> new MainWindow(controller));
-		is.close();
+		
 //		throw new UnsupportedOperationException("GUI mode is not ready yet ..."); 	TODO
 	}
 

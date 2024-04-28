@@ -52,6 +52,22 @@ public class MapViewer extends AbstractMapViewer {
 			_count = 0;
 			_color = color;
 		}
+		
+		public void incrementCount() {
+			++_count;
+		}
+		
+		public void resetCount() {
+			_count = 0;
+		}
+		
+		public int getCount() {
+			return _count;
+		}
+		
+		public Color getColor() {
+			return _color;
+		}
 	}
 
 	// Un mapa para la información sobre las especies
@@ -73,7 +89,7 @@ public class MapViewer extends AbstractMapViewer {
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				switch (e.getKeyChar()) {
+				switch (Character.toLowerCase(e.getKeyChar())) {
 				case 'h':
 					_showHelp = !_showHelp;
 					repaint();
@@ -86,8 +102,6 @@ public class MapViewer extends AbstractMapViewer {
 						_currState = null;
 						indexState = 0;
 					}
-					// TODO Cambiar _currState al siguiente (de manera circular). Después de null
-					// viene el primero de Animal.State.values() y después del último viene null.
 					repaint();
 				default:
 				}
@@ -130,11 +144,13 @@ public class MapViewer extends AbstractMapViewer {
 			drawObjects(gr, _objs, _time);
 
 		if (_showHelp) {
-			drawStringWithRect(gr, 0, 0, "h: toggle help" + System.lineSeparator() + "s: show animals of a specific state");
+			Color auxColor = gr.getColor();
+			gr.setColor(Color.RED);
+			gr.drawString("h: toggle help", 10, 20);
+			gr.drawString("s: show animals of a specific state", 10, 35);
+			gr.setColor(auxColor);
+			
 		}
-		// TODO Mostrar el texto de ayuda si _showHelp es true. El texto a mostrar es el
-		// siguiente (en 2 líneas):
-		//
 		// h: toggle help
 		// s: show animals of a specific state
 
@@ -152,16 +168,15 @@ public class MapViewer extends AbstractMapViewer {
 		// TODO Dibujar el grid de regiones
 		for (int i = 0; i < _rows; ++i) {
 			for (int j = 0; j < _cols; ++j) {
-				g.drawRect(
-						(int)Math.round(i *_rwidth) ,
-						(int)Math.round(j *_rheight) ,
-						(int)Math.round(i *_rwidth + _rwidth),
-						(int)Math.round(j *_rheight + _rheight)
-						);
+				drawCell(i, j, g);
 			}
 		}
 
 		// Dibujar los animales
+		for (String kind : _kindsInfo.keySet()) {
+			SpeciesInfo auxSpeciesInfo = _kindsInfo.get(kind);
+			auxSpeciesInfo.resetCount();
+		}
 		for (AnimalInfo a : animals) {
 
 			// Si no es visible saltamos la iteración
@@ -174,48 +189,57 @@ public class MapViewer extends AbstractMapViewer {
 				esp_info = new SpeciesInfo(ViewUtils.get_color(a.get_genetic_code()));
 				_kindsInfo.put(a.get_genetic_code(), esp_info);
 			}
-			++esp_info._count;
-			
-			// TODO Si esp_info es null, añade una entrada correspondiente al mapa. Para el
-			// color usa ViewUtils.get_color(a.get_genetic_code())
-
-			// TODO Incrementar el contador de la especie (es decir el contador dentro de
-			// tag_info)
+			esp_info.incrementCount();
 			Vector2D aux = a.get_position();
 			int x = (int) Math.round(aux.getX());
 			int y = (int) Math.round(aux.getY());
 			int size = (int) Math.round(a.get_age() / 2 + 2);
 			
-			g.setColor(esp_info._color);
+			g.setColor(esp_info.getColor());
 			g.fillRect(x, y, size, size);
-			
-			// TODO Dibijar el animal en la posicion correspondiente, usando el color
-			// tag_info._color. Su tamaño tiene que ser relativo a su edad, por ejemplo
-			// edad/2+2. Se puede dibujar usando fillRoundRect, fillRect o fillOval.
 
 		}
 		
+		drawInfoRectangles(g, time);
+		g.setColor(c);
+		
+	}
+	
+	private void drawCell(int row, int col, Graphics g) {
+		int x = (int) Math.round(col * _rwidth);
+		int y = (int) Math.round(row * _rheight);
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawRect(x + 2, y + 2, (int)Math.round(_rwidth), (int)Math.round(_rheight));
+		
+	}
+	
+	private void drawInfoRectangles(Graphics2D g, Double time) {
+		int posIndex = 0;
+		final int DISTANCE_BETWEEN_RECTANGLES = 18;
+		final int OFFSET = -5;
+		
+		//State tag
 		g.setColor(Color.BLUE);
 		if (_currState != null) {
-			drawStringWithRect(g, 20, _height, String.format("State: %s", _currState.toString()));
+			drawStringWithRect(g, 20, _height - DISTANCE_BETWEEN_RECTANGLES * posIndex + OFFSET, String.format("State: %s", _currState.toString()));
+			++posIndex;
 		}
 		
+		//Time tag
+		g.setColor(Color.MAGENTA);
+		drawStringWithRect(g, 20, _height - DISTANCE_BETWEEN_RECTANGLES * posIndex + OFFSET, String.format("Time: %.3f", time));
+		++posIndex;
 		
-		g.setColor(Color.PINK);
-		drawStringWithRect(g, 20, _height, String.format("%.3f", time));
-		// TODO Dibujar la etiqueta del estado visible, sin no es null.
-
-		// TODO Dibujar la etiqueta del tiempo. Para escribir solo 3 decimales puede
-		// usar String.format("%.3f", time)
-
-		// TODO Dibujar la información de todas la especies. Al final de cada iteración
-		// poner el contador de la especie correspondiente a 0 (para resetear el cuento)
+		//Species tag
 		for (Entry<String, SpeciesInfo> e : _kindsInfo.entrySet()) {
 			SpeciesInfo info = e.getValue();
-			g.setColor(info._color);
-			drawStringWithRect(g, 20, _height, String.format("%s: %d", e.getKey(), info._count));
+			if (info._count > 0) {
+				g.setColor(info._color);
+				drawStringWithRect(g, 20, _height - DISTANCE_BETWEEN_RECTANGLES * posIndex + OFFSET, String.format("%s: %d", e.getKey(), info._count));
+				++posIndex;
+			}
 		}
-		g.setColor(c);
+		
 	}
 
 	// Un método que dibujar un texto con un rectángulo

@@ -1,12 +1,13 @@
 package simulator.model.regions;
 
-import java.util.Iterator;
-
 import simulator.model.JSONable;
 
 public interface MapInfo extends JSONable, Iterable<MapInfo.RegionData>{
 	public record RegionData(int row, int col, RegionInfo r){
-		public String toString() {
+		/**
+		 * Method to generate string for region data. Used in RegionsTableModel.
+		 */
+		public String toString() { 
 			StringBuilder str = new StringBuilder();
 			str.append(this.row);
 			str.append(" ");
