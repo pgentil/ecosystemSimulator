@@ -31,7 +31,6 @@ class ControlPanel extends JPanel{
 	private JFileChooser _fc;
 	private boolean _stopped = true; // used in the run/stop buttons
 	private JButton _quitButton;
-	// TODO add more attributes here …
 	private JButton _openButton;
 	private JButton _viewerButton;
 	private JButton _regionsButton;
@@ -196,7 +195,7 @@ class ControlPanel extends JPanel{
 		 SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
 		} catch (Exception e) {
 			e.printStackTrace(System.out);
-			ViewUtils.showErrorMsg(e.getMessage()); //we need to add viewUtil and the rest of the new classes
+			ViewUtils.showErrorMsg(e.getMessage()); 
 			setButtons(true);
 			_stopped = true;
 		}

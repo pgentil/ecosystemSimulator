@@ -169,9 +169,8 @@ public class MapViewer extends AbstractMapViewer {
 	private void drawObjects(Graphics2D g, Collection<AnimalInfo> animals, Double time) {
 		
 		//Gets the component color at the beginning of the method to restore it at the end
-		
-		//Draw cells
 		Color c = g.getColor();
+		//Draw cells
 		for (int i = 0; i < _rows; ++i) {
 			for (int j = 0; j < _cols; ++j) {
 				drawCell(i, j, g); //draws the cell in the map
