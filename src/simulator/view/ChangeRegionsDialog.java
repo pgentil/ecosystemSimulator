@@ -6,7 +6,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 
 import javax.swing.JDialog;
@@ -15,8 +14,6 @@ import javax.swing.table.DefaultTableModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONString;
-
 import simulator.control.Controller;
 import simulator.launcher.Main;
 import simulator.model.EcoSysObserver;
@@ -24,8 +21,6 @@ import simulator.model.animals.AnimalInfo;
 import simulator.model.regions.MapInfo;
 import simulator.model.regions.RegionInfo;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;

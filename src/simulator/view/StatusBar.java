@@ -19,7 +19,6 @@ import simulator.model.regions.RegionInfo;
 public class StatusBar extends JPanel implements EcoSysObserver{
 	
 	private Controller _ctrl;
-	private JPanel _statusBar;
 	int _totalAnimals = 0;
 	double _time = 0;
 	int _height = 0;

@@ -2,12 +2,9 @@ package simulator.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import simulator.control.Controller;
 
 import javax.swing.Box;
@@ -186,6 +183,7 @@ class ControlPanel extends JPanel{
 		 if (n > 0 && !_stopped) {
 		try {
 		_ctrl.advance(dt); //new method when we merge
+		Thread.sleep((long) (dt * 1000)); //Sleep method added to slow the simulation
 		 SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
 		} catch (Exception e) {
 		 // TODO pass the corresponding error message to
