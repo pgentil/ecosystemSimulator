@@ -59,7 +59,11 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		
 		JPanel helpPanel = new JPanel();
 		mainPanel.add(helpPanel);
-		
+		/**
+		 * creates a textArea that outputs the needed text. In this case we made it uneditable as well as made the text wrap 
+		 * once it reaches the end of the line, and set the font and size to 14. The size has 20 pixels less than that of the
+		 * text panel so as not to make the text start so close to the border. 
+		 */
 		JTextArea textArea = new JTextArea();
 		textArea.setOpaque(false);
 		textArea.setText("Select a region type, the rows/cols "
@@ -72,10 +76,11 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
         textArea.setFont(font);
         textArea.setEditable(false);
 		helpPanel.add(textArea);
-		
 		mainPanel.add(Box.createRigidArea( new Dimension(780,10) ));
 		
-		
+		/**
+		 * Creates a table with only the first column editable 
+		 */
 		JPanel tablePanel = new JPanel();
 		mainPanel.add(tablePanel);
 		_dataTableModel = new DefaultTableModel() {
@@ -102,6 +107,9 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		_regionsInfo = Main.getRegionFactory().get_info();
 		_regionsModel = new DefaultComboBoxModel<>();
 		
+		/**
+		 * to add all the region types into the corresponding combo box
+		 */
 		for(JSONObject rI: _regionsInfo)
 			_regionsModel.addElement(rI.getString("type")); 
 		
@@ -113,25 +121,30 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		comboPanel.add(l1);
 		JComboBox<String> regionsCB = new JComboBox<>(_regionsModel); 
 		comboPanel.add(regionsCB);
-        regionsCB.addActionListener(e -> updateDataTable(regionsCB.getSelectedIndex())); //???????????????????????????
+        regionsCB.addActionListener(e -> updateDataTable(regionsCB.getSelectedIndex())); 
 
 		
 		_fromRowModel = new DefaultComboBoxModel<>();
 		_toRowModel = new DefaultComboBoxModel<>();
 		_fromColModel = new DefaultComboBoxModel<>();
 		_toColModel = new DefaultComboBoxModel<>();
-		
+		/**
+		 * label l2 and l3 stand for label 2 and label 3, in eclipse the L(l) and 1(one) look very similar
+		 */
 		JLabel l2 = new JLabel("Row from/to: " );
 		comboPanel.add(l2);
-		JComboBox<String> fromRowCB = new JComboBox<>(_fromRowModel); //no fucking clue if its right
+		/**
+		 * creates the different comboboxes needed using the corresponding models 
+		 */
+		JComboBox<String> fromRowCB = new JComboBox<>(_fromRowModel); 
 		comboPanel.add(fromRowCB);
-		JComboBox<String> toRowCB = new JComboBox<>(_toRowModel); //no fucking clue if its right
+		JComboBox<String> toRowCB = new JComboBox<>(_toRowModel); 
 		comboPanel.add(toRowCB);
 		JLabel l3 = new JLabel("Column from/to:" );
 		comboPanel.add(l3);
-		JComboBox<String> fromColCB = new JComboBox<>(_fromColModel); //no fucking clue if its right
+		JComboBox<String> fromColCB = new JComboBox<>(_fromColModel);
 		comboPanel.add(fromColCB);
-		JComboBox<String> toColCB = new JComboBox<>(_toColModel); //no fucking clue if its right
+		JComboBox<String> toColCB = new JComboBox<>(_toColModel);
 		comboPanel.add(toColCB);
 
 		JPanel buttonPanel = new JPanel();
@@ -173,7 +186,7 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 			JSONObject regions = new JSONObject();
 			regions.put("regions", regionsArray);
 			_ctrl.set_regions(regions);		
-			_status = 0;
+			_status = 1;
 			setVisible(false);
 	    });		
 		
@@ -181,17 +194,22 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
         JButton cancelButton = new JButton("Cancel");
 		buttonPanel.add(cancelButton);
 		cancelButton.addActionListener(e -> {
-		        _status = 0; // Set _status to 0
-		        setVisible(false); // Make the dialog invisible
+		        _status = 0; 
+		        setVisible(false); 
 		    });		
 
 
-		setPreferredSize(new Dimension(800, 400)); // puedes usar otro tama�o
+		setPreferredSize(new Dimension(800, 400)); 
 		pack();
 		setResizable(false);
 		setVisible(false);
 	}
-	private void updateDataTable(int selectedIndex) { //99% sure this is worng
+	/**
+	 * given the selected index, grabs all the data from the regionsInfo and iterates through the different keys to add the
+	 * key and its description to the first and third row of the table, while being able to edit the second row (its value)
+	 * @param selectedIndex
+	 */
+	private void updateDataTable(int selectedIndex) { 
 		if (selectedIndex != -1) {
             JSONObject regionInfo = _regionsInfo.get(selectedIndex);
             JSONObject data = regionInfo.getJSONObject("data");
@@ -210,7 +228,11 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		setVisible(true);
 	}
 
-	
+	/**
+	 * updates the combo box indexes showing the current rows and cols 
+	 * @param row
+	 * @param col
+	 */
 	void setComboBox(int row, int col)
 	{
 		for(int i = 0; i < row; i++)
@@ -228,27 +250,12 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
 		setComboBox(map.get_rows(), map.get_cols());
-		//onReset(time, map, animals);
 	}
 
 	@Override
-	public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
-		setComboBox(map.get_rows(), map.get_cols());
+	public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {	
+	    setComboBox(map.get_rows(), map.get_cols());
 
-//	    _fromRowModel.removeAllElements();
-//	    _toRowModel.removeAllElements();
-//	    _fromColModel.removeAllElements();
-//	    _toColModel.removeAllElements();
-//
-//	    for (int i = 0; i < map.get_rows(); i++) {
-//	        _fromRowModel.addElement(Integer.toString(i));
-//	        _toRowModel.addElement(Integer.toString(i));
-//	    }
-//
-//	    for (int j = 0; j < map.get_cols(); j++) {
-//	        _fromColModel.addElement(Integer.toString(j));
-//	        _toColModel.addElement(Integer.toString(j));
-//	    }
 	}
 
 	@Override
