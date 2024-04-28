@@ -1,5 +1,5 @@
 package icons;
 
-public class Icons {
+public class ICONS {
 
 }
