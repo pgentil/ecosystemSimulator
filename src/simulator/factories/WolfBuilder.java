@@ -1,23 +1,19 @@
 package simulator.factories;
 
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import simulator.misc.Utils;
 import simulator.misc.Vector2D;
-import simulator.model.animals.Animal;
 import simulator.model.animals.IncorrectParametersException;
 import simulator.model.animals.SelectionStrategy;
 import simulator.model.animals.Wolf;
 
 import simulator.launcher.Main;
 
-public class WolfBuilder extends Builder<Animal>{
+public class WolfBuilder extends AnimalBuilder{
 
 	public WolfBuilder() {
 		super("wolf", "Wolf");
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -36,22 +32,10 @@ public class WolfBuilder extends Builder<Animal>{
 	protected Wolf create_instance(JSONObject data) {
 		fill_in_data(data);
 		
-		Vector2D pos = null;
+		
 		JSONObject mateStrat = data.getJSONObject("mate_strategy");
 		JSONObject huntStrat = data.getJSONObject("hunt_strategy");
-		if (data.has("pos")) {
-			JSONObject posJ = data.getJSONObject("pos");
-			JSONArray x_range =  posJ.getJSONArray("x_range");
-			JSONArray y_range = posJ.getJSONArray("y_range");
-			if (x_range.getDouble(0) == y_range.getDouble(0) && x_range.getDouble(1) == y_range.getDouble(1)) {
-				pos = Vector2D.get_random_vector(x_range.getDouble(0), x_range.getDouble(1));
-			}
-			else {
-				double x = Utils._rand.nextDouble(x_range.getDouble(0), x_range.getDouble(1));
-				double y = Utils._rand.nextDouble(y_range.getDouble(0), y_range.getDouble(1));
-				pos = new Vector2D(x, y);
-			}
-		}
+		Vector2D pos = setPos(data);
 		
 		Factory<SelectionStrategy> selection_strategy_factory = Main.getStrategyFactory();
 		

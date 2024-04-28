@@ -233,9 +233,9 @@ public class MapViewer extends AbstractMapViewer {
 		//Species tag
 		for (Entry<String, SpeciesInfo> e : _kindsInfo.entrySet()) {
 			SpeciesInfo info = e.getValue();
-			if (info._count > 0) {
+			if (info.getCount() > 0) {
 				g.setColor(info._color);
-				drawStringWithRect(g, 20, _height - DISTANCE_BETWEEN_RECTANGLES * posIndex + OFFSET, String.format("%s: %d", e.getKey(), info._count));
+				drawStringWithRect(g, 20, _height - DISTANCE_BETWEEN_RECTANGLES * posIndex + OFFSET, String.format("%s: %d", e.getKey(), info.getCount()));
 				++posIndex;
 			}
 		}
