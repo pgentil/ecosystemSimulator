@@ -59,6 +59,10 @@ class ControlPanel extends JPanel{
 		_changeRegionsDialog = new ChangeRegionsDialog(_ctrl);
 		
 		//Open Button
+		/**
+		 * Creates a button that when clicked opens the chosen files and if correctly opened, loads the data 
+		 * from the chosen file.
+		 */
 		_toolBar.add(Box.createGlue()); 
 		_toolBar.addSeparator();
 		_openButton = new JButton();
@@ -81,7 +85,7 @@ class ControlPanel extends JPanel{
 						joFromFile.getInt("width"),
 						joFromFile.getInt("height"));
 				_ctrl.load_data(joFromFile);
-			} //TODO else
+			} 
 		});
 		_toolBar.add(_openButton, 0);
 		
@@ -92,9 +96,6 @@ class ControlPanel extends JPanel{
 		_viewerButton.setToolTipText("View");
 		_viewerButton.setIcon(new ImageIcon(ICONS.class.getResource("viewer.png")));
 		_toolBar.add(_viewerButton, 1);
-		
-		
-		
 		_viewerButton.addActionListener((e) -> {
 			JFrame frame = new JFrame();
 			frame.pack();
@@ -110,7 +111,11 @@ class ControlPanel extends JPanel{
 		_toolBar.add(_regionsButton, 2);
 		_regionsButton.addActionListener((e) ->  _changeRegionsDialog.open(ViewUtils.getWindow(this)));
 		
-		
+		/**
+		 * creates the jSpinner and JtextField for the steps and delta time using a spinner, textfield and 2 labels
+		 * their default value is set to 10000 and 0.03 correspondingly. An aux panel was created to help with the 
+		 * formatting
+		 */
 		
 		_steps = new JSpinner();
 		_deltaField = new JTextField();
@@ -138,6 +143,9 @@ class ControlPanel extends JPanel{
 		_toolBar.add(auxPanel, 8);
 		
 		//run button
+		/**
+		 * gets the needed information from the Jspinner (steps) and textFiels (data time) and calls the runSim method with them
+		 */
 		_toolBar.add(Box.createGlue()); 
 		_toolBar.addSeparator();
 		_runButton = new JButton();
@@ -145,11 +153,11 @@ class ControlPanel extends JPanel{
 		_runButton.setIcon(new ImageIcon(ICONS.class.getResource("run.png")));
 		_runButton.addActionListener((e) -> 
 		{
-			int stepVlue = (int)_steps.getValue(); //buff idk
+			int stepVlue = (int)_steps.getValue();
 			double _deltaFieldVlue;
 			String value = _deltaField.getText();
 			if (!value.equals(""))
-				_deltaFieldVlue = Double.parseDouble(_deltaField.getText());  //buff idk
+				_deltaFieldVlue = Double.parseDouble(_deltaField.getText()); 
 			else {
 				_deltaFieldVlue = 0;
 			}
@@ -171,7 +179,7 @@ class ControlPanel extends JPanel{
 		_toolBar.add(_stopButton, 4);
 		
 		// Quit Button
-		_toolBar.add(Box.createGlue()); // this aligns the button to the right
+		_toolBar.add(Box.createGlue()); 
 		_toolBar.addSeparator();
 		_quitButton = new JButton();
 		_quitButton.setToolTipText("Quit");
@@ -179,20 +187,16 @@ class ControlPanel extends JPanel{
 		_quitButton.addActionListener((e) -> ViewUtils.quit(this));
 		_toolBar.add(_quitButton);
 	}
-	// TODO The rest of the methods go here...
 	
 	private void run_sim(int n, double dt) {
 		 if (n > 0 && !_stopped) {
 		try {
-		_ctrl.advance(dt); //new method when we merge
+		_ctrl.advance(dt); 
 		Thread.sleep((long) (dt * 1000)); //Sleep method added to slow the simulation
 		 SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
 		} catch (Exception e) {
-		 // TODO pass the corresponding error message to
-		 // ViewUtils.showErrorMsg
 			e.printStackTrace(System.out);
 			ViewUtils.showErrorMsg(e.getMessage()); //we need to add viewUtil and the rest of the new classes
-		 // TODO enable all the buttons
 			setButtons(true);
 			_stopped = true;
 		}
@@ -201,6 +205,10 @@ class ControlPanel extends JPanel{
 				_stopped = true;
 		 }
 		}
+	/**
+	 * sets all buttons to whatever the boolean "set" is 
+	 * @param set
+	 */
 	
 	private void setButtons(boolean set)
 	{
@@ -211,6 +219,10 @@ class ControlPanel extends JPanel{
 		_runButton.setEnabled(set);
 		_stopButton.setEnabled(set);
 	}
+	/**
+	 * sets all buttons except the stop button to whatever the boolean "set" is 
+	 * @param set
+	 */
 	private void setButtonsExceptStop(boolean set)
 	{
 		_quitButton.setEnabled(set);
