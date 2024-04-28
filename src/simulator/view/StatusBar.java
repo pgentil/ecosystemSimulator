@@ -37,6 +37,10 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 	}
 	
 	private void initGUI() {
+		/**
+		 * creates 3 different labels, one for time another for animals and another for the dimensions
+		 * Initially they have empty values.
+		 */
 		 this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		 this.setBorder(BorderFactory.createBevelBorder(1));
 		 
@@ -57,14 +61,19 @@ public class StatusBar extends JPanel implements EcoSysObserver{
 		 this.add(dimensionL);
 		}
 
-	
+	/**
+	 * updates the different labels with the new values
+	 * @param time
+	 * @param map
+	 * @param animals
+	 */
 	void updateTimeMapAnimals(double time, MapInfo map, List<AnimalInfo> animals)
 	{
 		_time = time;
 		_totalAnimals = animals.size();
 		_height = map.get_height();
 		_width = map.get_width();
-		_cols = map.get_cols(); //idk if these are the cols and rows that they ask me
+		_cols = map.get_cols();
 		_rows = map.get_rows();
 		
 		String formattedTime = String.format("%.2f", _time);

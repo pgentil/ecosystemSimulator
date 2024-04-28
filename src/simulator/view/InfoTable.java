@@ -20,11 +20,11 @@ public class InfoTable extends JPanel {
 	}
 
 	private void initGUI() {
-		 // TODO change the panel layout to BorderLayout()
+		 // change the panel layout to BorderLayout()
 		this.setLayout(new BorderLayout());
-		 // TODO add a border with a title (using text _title) to the Jpanel
+		 // add a border with a title (using text _title) to the Jpanel
 		this.setBorder(BorderFactory.createTitledBorder(_title));
-		 // TODO add a JTable (with vertical scroll bar) that uses _tableModel
+		 // add a JTable (with vertical scroll bar) that uses _tableModel
 		JTable table = new JTable(_tableModel);
 		JScrollPane sp = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane. HORIZONTAL_SCROLLBAR_NEVER);
 		this.add(sp);

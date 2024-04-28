@@ -24,10 +24,8 @@ public class MainWindow extends JFrame {
 	private void initGUI() {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		setContentPane(mainPanel);
-		//TODO create ControlPanel and add it in the PAGE_START section of mainPanel
-		//TODO create StatusBar and add it in the PAGE_END section of mainPanel
-		
-		
+		//create ControlPanel and add it in the PAGE_START section of mainPanel
+		//create StatusBar and add it in the PAGE_END section of mainPanel
 		_control_panel = new ControlPanel(_ctrl);
 		mainPanel.add(_control_panel, BorderLayout.PAGE_START);
 		_statusBar = new StatusBar(_ctrl);
@@ -46,7 +44,7 @@ public class MainWindow extends JFrame {
 		regionsTable.setLocation(speciesTable.getX() , speciesTable.getY() + 525);
 		contentPanel.add(regionsTable);
 //		
-		//TODO call ViewUtils.quit(MainWindow.this) in the windowClosing method
+		//call ViewUtils.quit(MainWindow.this) in the windowClosing method
 		 addWindowListener(new WindowListener() {
 				
 				@Override
