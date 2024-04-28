@@ -24,8 +24,17 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 	
 	int nextIndex = 0;
 	
+	/**
+	 * Saves the information used to create the array of data. Needed to maintain a nice and flexible interface. 
+	 * It allows the row of a certain species to disappear in runtime when there are none left in the simulation. This is the reason the species table is done differently 
+	 * from the regions table, which is simpler.
+	 */
 	Map<String, Map<State, Integer>> info;
-	HashMap<State, Integer> colIndex; //maps state value to the corresponding column
+	
+	/**
+	 * HashMap that saves the index of the different types of animal's states in the simulation. 
+	 */
+	Map<State, Integer> colIndex; 
 	
 	Object[][] myArray;
 	
@@ -35,7 +44,6 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 		 initColumnNames();
 		 _ctrl = ctrl;
 		 _ctrl.addObserver(this);
-	 // TODO initialise the corresponding data structures
 	 }
 	 
 	 private void initColumnNames() {
@@ -48,15 +56,19 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 			 ++i;
 		 }
 	 }
-	 // TODO the rest of the methods go here...
 	 
+	 /**
+	  * Erases information for the species table stored in info Map.
+	  */
 	 private void initInfo()
 	 {
-		 
 		 info.clear();
 	 }
 	 
-	 private void initAray() {
+	 /**
+	  * Initializes array of data with the information stored in info Map.
+	  */
+	 private void initArray() {
 		 myArray = new Object[info.size()][_cols];
 		 int i = 0;
 		 for (String g: info.keySet()) {
@@ -70,24 +82,27 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 		 }
 	 }
 	 
+	 /**
+	  * "Updates" array of data for the species table. It actually creates a new array with the information stored in info Map.
+	  * @param animals 
+	  */
 	 void updateArray(List<AnimalInfo> animals)
 	 {
 		 initInfo();
 		 for (AnimalInfo a: animals) {
 			 String geneticCode = a.get_genetic_code();
 			 if (!info.containsKey(geneticCode)) {
-				 info.put(geneticCode, new HashMap<State, Integer>());
+				 info.put(geneticCode, new HashMap<State, Integer>()); //maps a genetic code to another mapping of state to integer
 			 }
-			 Map<State, Integer> stateToValue = info.get(geneticCode);
-			 if (!stateToValue.containsKey(a.get_state())) {
+			 Map<State, Integer> stateToValue = info.get(geneticCode); //gets the map from state to integer of that genetic code
+			 if (!stateToValue.containsKey(a.get_state())) { //checks if the state is already in the map that goes from state to integer of the specific genetic code
 				 stateToValue.put(a.get_state(), 0);
 			 }
 			 int value = stateToValue.get(a.get_state());
 			 ++value;
 			 stateToValue.replace(a.get_state(), value);
 			 
-			 initAray();
-			 //myArray[rowIndex.get(geneticCode)][colIndex.get(a.get_state())] = value
+			 initArray();
 		}
 		fireTableDataChanged();
 		 
@@ -111,7 +126,6 @@ public class SpeciesTableModel extends AbstractTableModel implements EcoSysObser
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		
 		
 	}
 

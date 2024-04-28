@@ -2,6 +2,7 @@ package simulator.view;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -14,32 +15,40 @@ import simulator.model.regions.MapInfo.RegionData;
 import simulator.model.regions.RegionInfo;
 
 public class RegionsTableModel extends AbstractTableModel implements EcoSysObserver{
+	//The constants declared here are useful to help know the order of the data that will probably not change in future implementations
 	static final int NUMBER_OF_UNVARIABLE_DATA = 3;
 	static final int COL_INDEX_OF_ROWS = 0;
 	static final int COL_INDEX_OF_COLS = 1;
 	static final int COL_INDEX_OF_REGION_DESCRIPTION = 2;
-	// TODO define the necessary attributes
 	Controller _ctrl;
 	int _rows;
 	int _cols;
-	HashMap<String, Integer> rowIndex; //maps genetic code to index in table
-	HashMap<Diet, Integer> colIndex;
+	
+	/**
+	 * HashMap that saves the index of the different types of region in the simulation
+	 */
+	Map<Diet, Integer> colIndex;
 	
 	String[] columnName;
 	
 	int nextIndex = 0;
 	
+	/**
+	 * Array of the table's data.
+	 */
 	Object[][] myArray;
 	
 	public RegionsTableModel(Controller ctrl) {
 		this._cols = Diet.values().length + NUMBER_OF_UNVARIABLE_DATA;
-		rowIndex = new HashMap<String, Integer>();
 		colIndex = new HashMap<Diet, Integer>();
 		initColumnNames();
 		_ctrl = ctrl;
 		_ctrl.addObserver(this);
 	}
 	
+	/**
+	 * Initializes the names of the columns
+	 */
 	private void initColumnNames() {
 		 columnName = new String[_cols];
 		 columnName[COL_INDEX_OF_ROWS] = "Row";
@@ -54,9 +63,13 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 		 }
 	 }
 	
+	/**
+	 * Initializes array of data myArray[][] and its values to generate a clean array. Numeric cells are initialized to 0.
+	 * @param rows Number of rows of regions in the simulation.
+	 * @param cols Number of columns of regions in the simulation.
+	 */
 	private void initArray(int rows, int cols)
 	 {
-		 rowIndex.clear();
 		 nextIndex = 0;
 		 myArray = new Object[rows * cols][Diet.values().length + NUMBER_OF_UNVARIABLE_DATA];
 		 _rows = rows * cols;
@@ -70,37 +83,35 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 		 }
 	 }
 	
-	
-	
+	/**
+	 * Updates array of data given the Region Manager of the simulator
+	 * @param map Interface of the region manager of the simulation, to access information.
+	 */
 	void updateArray(MapInfo map) {
 		initArray(map.get_rows(), map.get_cols());
 		for (RegionData r: map) {
-			
-			RegionInfo ri = r.r();
-			myArray[nextIndex][COL_INDEX_OF_REGION_DESCRIPTION] = ri.toString();
-			rowIndex.put(r.toString(), nextIndex); //Using RegionData toString()
-			++nextIndex;
-			int r_idx = rowIndex.get(r.toString());
+			RegionInfo ri = r.r(); //gets RegionInfo 
+			int r_idx = nextIndex;
+			myArray[r_idx][COL_INDEX_OF_REGION_DESCRIPTION] = ri.toString(); //description of region info
 			myArray[r_idx][COL_INDEX_OF_ROWS] = r.row();
 			myArray[r_idx][COL_INDEX_OF_COLS] = r.col();
 			for (AnimalInfo a: ri.getAnimalsInfo()) {
-				int value = (Integer) myArray[r_idx][colIndex.get(a.get_diet())];
-				++value;
-				myArray[r_idx][colIndex.get(a.get_diet())] = value;
+				int value = (Integer) myArray[r_idx][colIndex.get(a.get_diet())]; //casts cell to Integer and then to primitive int
+				++value; //increments retrieved value
+				myArray[r_idx][colIndex.get(a.get_diet())] = value; //casts again to Integer
 			}
+			++nextIndex; //increments the next Index
 		}
 		fireTableDataChanged();
 	}
 
 	@Override
 	public int getRowCount() {
-		// TODO Auto-generated method stub
-		return rowIndex.size();
+		return nextIndex;
 	}
 
 	@Override
 	public int getColumnCount() {
-
 		return Diet.values().length + NUMBER_OF_UNVARIABLE_DATA;
 	}
 
@@ -112,13 +123,11 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 	@Override
 	public void onRegister(double time, MapInfo map, List<AnimalInfo> animals) {
 		updateArray(map);
-		
 	}
 
 	@Override
 	public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
 		updateArray(map);
-		
 	}
 
 	@Override
@@ -129,13 +138,11 @@ public class RegionsTableModel extends AbstractTableModel implements EcoSysObser
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
 		updateArray(map);
-		
 	}
 
 	@Override
 	public void onAvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
 		updateArray(map);
-		
 	}
 	
 	@Override

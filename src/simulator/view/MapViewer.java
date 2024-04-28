@@ -157,22 +157,28 @@ public class MapViewer extends AbstractMapViewer {
 	}
 
 	private boolean visible(AnimalInfo a) {
-		// TODO Devolver true si el animal es visible, es decir si _currState es null o
-		// su estado es igual a _currState.
 		return _currState == null || _currState == a.get_state();
 	}
 
+	/**
+	 * Draws the cells, the animals and the information labels in the map.
+	 * @param g Graphics of the component.
+	 * @param animals Collection of animals in the simulator.
+	 * @param time Time of the simulation that is running (used to display it in the map).
+	 */
 	private void drawObjects(Graphics2D g, Collection<AnimalInfo> animals, Double time) {
 		
+		//Gets the component color at the beginning of the method to restore it at the end
+		
+		//Draw cells
 		Color c = g.getColor();
-		// TODO Dibujar el grid de regiones
 		for (int i = 0; i < _rows; ++i) {
 			for (int j = 0; j < _cols; ++j) {
-				drawCell(i, j, g);
+				drawCell(i, j, g); //draws the cell in the map
 			}
 		}
 
-		// Dibujar los animales
+		//Draw animals
 		for (String kind : _kindsInfo.keySet()) {
 			SpeciesInfo auxSpeciesInfo = _kindsInfo.get(kind);
 			auxSpeciesInfo.resetCount();
@@ -200,19 +206,31 @@ public class MapViewer extends AbstractMapViewer {
 
 		}
 		
+		//Draw information labels
 		drawInfoRectangles(g, time);
 		g.setColor(c);
 		
 	}
 	
+	/**
+	 * Draws a single cell in the map as a rectangle using the Graphics object.
+	 * @param row Row of the cell to be drawn.
+	 * @param col Column of the cell to be drawn.
+	 * @param g Graphics instance.
+	 */
 	private void drawCell(int row, int col, Graphics g) {
 		int x = (int) Math.round(col * _rwidth);
 		int y = (int) Math.round(row * _rheight);
 		g.setColor(Color.LIGHT_GRAY);
-		g.drawRect(x + 2, y + 2, (int)Math.round(_rwidth), (int)Math.round(_rheight));
+		g.drawRect(x, y, (int)Math.round(_rwidth), (int)Math.round(_rheight));
 		
 	}
 	
+	/**
+	 * Draws the information labels in the map.
+	 * @param g Graphics instance.
+	 * @param time Time of simulation running.
+	 */
 	private void drawInfoRectangles(Graphics2D g, Double time) {
 		int posIndex = 0;
 		final int DISTANCE_BETWEEN_RECTANGLES = 18;
@@ -254,7 +272,6 @@ public class MapViewer extends AbstractMapViewer {
 		this._objs = objs;
 		this._time = time;
 		repaint();
-		// TODO Almacenar objs y time en los atributos correspondientes y llamar a
 		// repaint() para redibujar el componente.
 	}
 
@@ -269,7 +286,6 @@ public class MapViewer extends AbstractMapViewer {
 		_currState = null;
 		indexState = 0;
 		
-		// TODO Actualizar los atributos _width, _height, _cols, _rows, etc.
 
 		// Esto cambia el tamaño del componente, y así cambia el tamaño de la ventana
 		// porque en MapWindow llamamos a pack() después de llamar a reset
