@@ -22,7 +22,6 @@ import javax.swing.SwingUtilities;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import icons.ICONS;
 
 class ControlPanel extends JPanel{
 	private Controller _ctrl;
@@ -66,7 +65,7 @@ class ControlPanel extends JPanel{
 		_toolBar.addSeparator();
 		_openButton = new JButton();
 		_openButton.setToolTipText("Open");
-		_openButton.setIcon(new ImageIcon(ICONS.class.getResource("open.png")));
+		_openButton.setIcon(new ImageIcon("resources/icons/open.png"));
 		_openButton.addActionListener((e) -> {
 			int returnVal = _fc.showOpenDialog(ViewUtils.getWindow(this));
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -93,7 +92,7 @@ class ControlPanel extends JPanel{
 		_toolBar.addSeparator();
 		_viewerButton = new JButton();
 		_viewerButton.setToolTipText("View");
-		_viewerButton.setIcon(new ImageIcon(ICONS.class.getResource("viewer.png")));
+		_viewerButton.setIcon(new ImageIcon("resources/icons/viewer.png"));
 		_toolBar.add(_viewerButton, 1);
 		_viewerButton.addActionListener((e) -> {
 			JFrame frame = new JFrame();
@@ -106,7 +105,7 @@ class ControlPanel extends JPanel{
 		_toolBar.add(Box.createGlue()); 
 		_regionsButton = new JButton();
 		_regionsButton.setToolTipText("Regions");
-		_regionsButton.setIcon(new ImageIcon(ICONS.class.getResource("regions.png")));
+		_regionsButton.setIcon(new ImageIcon("resources/icons/regions.png"));
 		_toolBar.add(_regionsButton, 2);
 		_regionsButton.addActionListener((e) ->  _changeRegionsDialog.open(ViewUtils.getWindow(this)));
 		
@@ -149,7 +148,7 @@ class ControlPanel extends JPanel{
 		_toolBar.addSeparator();
 		_runButton = new JButton();
 		_runButton.setToolTipText("Run");
-		_runButton.setIcon(new ImageIcon(ICONS.class.getResource("run.png")));
+		_runButton.setIcon(new ImageIcon("resources/icons/run.png"));
 		_runButton.addActionListener((e) -> 
 		{
 			int stepVlue = (int)_steps.getValue();
@@ -171,7 +170,7 @@ class ControlPanel extends JPanel{
 		_toolBar.add(Box.createGlue()); 
 		_stopButton = new JButton();
 		_stopButton.setToolTipText("Stop");
-		_stopButton.setIcon(new ImageIcon(ICONS.class.getResource("stop.png")));
+		_stopButton.setIcon(new ImageIcon("resources/icons/stop.png"));
 		_stopButton.addActionListener((e) -> {
 			_stopped = true;
 			});
@@ -182,7 +181,7 @@ class ControlPanel extends JPanel{
 		_toolBar.addSeparator();
 		_quitButton = new JButton();
 		_quitButton.setToolTipText("Quit");
-		_quitButton.setIcon(new ImageIcon(ICONS.class.getResource("exit.png")));
+		_quitButton.setIcon(new ImageIcon("resources/icons/exit.png"));
 		_quitButton.addActionListener((e) -> ViewUtils.quit(this));
 		_toolBar.add(_quitButton);
 	}
