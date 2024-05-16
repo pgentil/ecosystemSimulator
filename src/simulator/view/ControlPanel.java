@@ -190,7 +190,6 @@ class ControlPanel extends JPanel{
 		 if (n > 0 && !_stopped) {
 		try {
 		_ctrl.advance(dt); 
-		Thread.sleep((long) (dt * 1000)); //Sleep method added to slow the simulation
 		 SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
 		} catch (Exception e) {
 			e.printStackTrace(System.out);
