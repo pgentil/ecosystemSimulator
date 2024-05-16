@@ -95,7 +95,7 @@ public class MapViewer extends AbstractMapViewer {
 					repaint();
 					break;
 				case 's':
-					if (indexState != State.values().length - 1) {
+					if (indexState != State.values().length) {
 						_currState = State.values()[indexState]; //not breaking encapsulation
 						++indexState;
 					} else {
