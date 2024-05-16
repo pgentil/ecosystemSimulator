@@ -287,7 +287,7 @@ public class Main {
 		return _region_factory;
 	}
 	
-	public double getDeltaTime(){
+	public static double getDeltaTime(){
 		return _delta_time;
 	}
 

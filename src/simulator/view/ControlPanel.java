@@ -5,7 +5,10 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Locale;
+
 import simulator.control.Controller;
+import simulator.launcher.Main;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -135,7 +138,7 @@ class ControlPanel extends JPanel{
 		auxPanel.add(_deltaField);
 		auxPanel.setOpaque(false);
 		_deltaField.setPreferredSize(new Dimension(90, 30));
-		_deltaField.setText("0.03");
+		_deltaField.setText(String.format(Locale.US, "%.2f", Main.getDeltaTime()));
 		JLabel dTLabel = new JLabel(" Delta-Time: ");
 		_toolBar.add(dTLabel,7);
 		_toolBar.add(auxPanel, 8);
@@ -190,6 +193,7 @@ class ControlPanel extends JPanel{
 		 if (n > 0 && !_stopped) {
 		try {
 		_ctrl.advance(dt); 
+		Thread.sleep((long) (dt * 1000));
 		 SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
 		} catch (Exception e) {
 			e.printStackTrace(System.out);
