@@ -11,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -96,6 +98,9 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver{
 		JTable t1 = new JTable(_dataTableModel);
 		t1.setPreferredSize(new Dimension(780, 200));
 		
+		TableColumn firstColumn = t1.getColumn("Description");		
+		firstColumn.setPreferredWidth(400);  // Preferred width
+     
 		JScrollPane tableScroll = new JScrollPane(t1);
 		tableScroll.setPreferredSize(new Dimension (780, 200));
 		t1.setFillsViewportHeight(true);
